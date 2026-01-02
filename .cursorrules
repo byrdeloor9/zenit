@@ -1,0 +1,159 @@
+# Cursor AI Rules for Zénit Project
+
+## Project Overview
+
+This is a monorepo financial management application (Zénit) with:
+- **Backend**: Django REST Framework in `budget_app_backend/`
+- **Frontend**: React + Vite + TypeScript in `budget_app_frontend/`
+- **Workspace Root**: `C:\Users\byron\Documents\1. PROJECTS\1. ZENIT\`
+
+## PowerShell Command Rules
+
+### Critical: Command Chaining
+NEVER use `&&` operator in PowerShell. Use semicolons `;` or execute commands separately.
+
+```powershell
+# ❌ WRONG
+cd budget_app_frontend && npm install
+
+# ✅ CORRECT
+cd budget_app_frontend; npm install
+# OR
+cd budget_app_frontend
+npm install
+```
+
+### Critical: Directory Navigation
+ALWAYS use FULL ABSOLUTE PATHS when executing `cd` commands to avoid confusion about current directory state.
+
+```powershell
+# ❌ WRONG - Relative paths can fail if you're not in expected directory
+cd budget_app_backend
+uv run python manage.py check
+
+# ✅ CORRECT - Always use full paths with cd
+cd "C:\Users\byron\Documents\1. PROJECTS\1. ZENIT\budget_app_backend"
+uv run python manage.py check
+
+# For workspace root operations
+cd "C:\Users\byron\Documents\1. PROJECTS\1. ZENIT"
+cd budget_app_frontend
+npm install
+```
+
+**IMPORTANT**: Use `Get-Location` to check current directory if you need to, but ALWAYS use full absolute paths with `cd` to prevent errors from being in wrong directory.
+
+### Critical: Creating Directories
+Use `New-Item` instead of `mkdir` for better control and path verification.
+
+```powershell
+# ✅ CORRECT
+cd "C:\Users\byron\Documents\1. PROJECTS\1. ZENIT"
+New-Item -ItemType Directory -Path "budget_app_frontend\public"
+```
+
+### Example of What Went Wrong Before
+During logo addition task, a directory was created in wrong location:
+```powershell
+# Created: C:\Users\byron\budget_app_frontend\public
+# Should be: C:\Users\byron\Documents\1. PROJECTS\1. ZENIT\budget_app_frontend\public
+```
+
+**Prevention**: Always verify location first and use full paths when uncertain.
+
+## TypeScript Code Rules
+
+All TypeScript code MUST be fully typed and compatible with strict mode (`"strict": true`):
+- No `any` types
+- No `@ts-ignore` or similar suppressions
+- Explicit types on interfaces, props, parameters, and return values
+- All code must compile with `tsc --noEmit`
+
+## File Operations
+
+When working with files across projects:
+
+1. **Verify workspace root**: `Get-Location` should show `C:\Users\byron\Documents\1. PROJECTS\1. ZENIT`
+2. **Use relative paths** from workspace root: `budget_app_frontend\src\...`
+3. **Navigate explicitly**: `cd budget_app_backend` or `cd budget_app_frontend`
+4. **Verify operations**: Check file/directory after creation
+
+## Backend Development
+
+- Django REST Framework patterns
+- Python type hints encouraged
+- All migrations tracked in `api/migrations/`
+- Custom commands in `api/management/commands/`
+
+## Frontend Development
+
+- React 18 with TypeScript strict mode
+- Tailwind CSS for styling
+- Material-UI icons only (no full MUI dependency)
+- Custom hooks in `src/hooks/`
+- API client in `src/api/`
+- Feature-based component organization
+
+## Common Paths
+
+- **Backend**: `budget_app_backend/`
+- **Frontend**: `budget_app_frontend/`
+- **Logo**: `docs/zenit_logo.jpg` → `budget_app_frontend/public/zenit_logo.jpg`
+- **Settings**: `budget_project/settings.py` (backend), `vite.config.ts` (frontend)
+
+## Testing & Validation
+
+- Backend: `python manage.py test`
+- Frontend: `npm run build` (validate TypeScript compilation)
+- Always run linters before completing tasks: `read_lints` tool
+
+## Documentation
+
+- Context engineering docs in `.context/` folder
+- Never create markdown documentation unless explicitly requested
+- No test scripts unless explicitly requested
+
+## Visual/UI Mockups
+
+**CRITICAL**: When the user asks for "esquemas" (schemes/mockups) or visual previews of design options:
+
+1. **Create an HTML file** in `budget_app_frontend/public/` with a descriptive name (e.g., `modal-titles-mockup.html`)
+2. **Include all design options** side by side for comparison
+3. **Use Tailwind CSS** (via CDN or existing styles) for consistency
+4. **Show examples for all affected components/modals**
+5. **Include both light and dark mode previews** when applicable
+6. **Make it accessible** via `http://localhost:5173/[filename].html` when dev server is running
+
+This allows the user to visually compare all options before making a decision.
+
+## Code Changes
+
+- Always use exact string replacement with `search_replace` tool
+- Verify edits with `read_file` after changes
+- Check linter errors after modifications
+- Follow existing code patterns and conventions
+
+## Visual/UI Changes
+
+**CRITICAL**: When making visual or UI changes, ALWAYS:
+1. **Read the component file** to understand current structure
+2. **Find where the component is used** (parent/container)
+3. **Read the parent component** to understand layout context (grid, flex, etc.)
+4. **Check for constraints** that affect the component (height, width, positioning)
+5. **Consider responsive behavior** (mobile, tablet, desktop)
+
+Example: When changing AccountCard, check AccountList to see:
+- Grid layout: `grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`
+- Height constraints: `h-full` makes card take full grid cell height
+- Spacing: `gap-6` affects card separation
+
+**Never change a component in isolation without understanding its container context.**
+
+## When In Doubt
+
+1. Read context files in `.context/` folder
+2. Verify current directory
+3. Use full workspace root path
+4. Check project structure in `project-structure.md`
+5. Reference command examples in `commands.md`
+6. Follow navigation patterns in `navigation.md`

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./backend
+    container_name: zenit-backend
+    restart: unless-stopped
+    volumes:
+      - static_volume:/app/staticfiles
+      # Si quieres logs persistentes:
+      # - ./backend/logs:/app/logs
+    env_file:
+      - ./backend/.env
+    environment:
+      # Ajusta esto según tu configuración de Postgres existente
+      - DJANGO_SETTINGS_MODULE=budget_project.settings
+    networks:
+      - existing_postgres_network
+    ports:
+      - "8001:8000"
+
+# Definimos la red externa
+networks:
+  existing_postgres_network:
+    external: true
+    # Nombre de la red confirmado
+    name: docker_default
+
+volumes:
+  static_volume:
