@@ -81,7 +81,7 @@ class TrendsViewSet(viewsets.ViewSet):
         
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='global-trends')
     def global_trends(self, request) -> Response:
         """
         GET /api/trends/global_trends/?months=12
@@ -113,7 +113,7 @@ class TrendsViewSet(viewsets.ViewSet):
         serializer = GlobalTrendsSerializer(trends_data)
         return Response(serializer.data)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='category-distribution')
     def category_distribution(self, request) -> Response:
         """
         GET /api/trends/category_distribution/?start_date=2024-01-01&end_date=2024-01-31
