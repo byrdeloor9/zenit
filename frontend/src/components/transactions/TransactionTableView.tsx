@@ -98,14 +98,11 @@ interface TransactionTableRowProps {
 function TransactionTableRow({ transaction: tx, compact, onEdit, onDelete }: TransactionTableRowProps) {
     const [menuOpen, setMenuOpen] = useState(false)
 
-    // Extract emoji from category name or use fallback
+    // Get category icon from API or use fallback
     const getCategoryIcon = () => {
-        const categoryName = tx.category_name || ''
-        // Match any emoji character
-        const emojiRegex = /[\p{Emoji_Presentation}\p{Extended_Pictographic}]/gu
-        const match = categoryName.match(emojiRegex)
-        if (match && match[0]) {
-            return match[0]
+        // Use category_icon from API if available
+        if (tx.category_icon) {
+            return tx.category_icon
         }
         // Fallback to type-based arrow
         return tx.type === 'Income' ? '↗️' : '↘️'
