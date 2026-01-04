@@ -231,4 +231,60 @@ export interface CategoryOverview {
   type: string
 }
 
+// New types for enhanced analytics
+export interface GlobalMonthlyData {
+  month: string
+  income: number
+  expenses: number
+  net: number
+}
+
+export interface GlobalTrends {
+  monthly_data: GlobalMonthlyData[]
+  total_income: number
+  total_expenses: number
+  net_balance: number
+  average_monthly_income: number
+  average_monthly_expenses: number
+}
+
+export interface CategoryDistributionItem {
+  category_id: number
+  category_name: string
+  category_icon: string
+  amount: number
+  percentage: number
+}
+
+export interface CategoryDistribution {
+  distribution: CategoryDistributionItem[]
+  total_expenses: number
+  period_start: string
+  period_end: string
+}
+
+export interface PeriodData {
+  income: number
+  expenses: number
+  net: number
+  start_date: string
+  end_date: string
+}
+
+export interface SpendingComparison {
+  period_type: 'month' | 'year'
+  current: PeriodData
+  previous: PeriodData
+  change: {
+    income_percent: number
+    expenses_percent: number
+  }
+}
+
+// Enhanced projection with breakdown
+export interface EnhancedIncomeProjection extends IncomeProjection {
+  recurring_expenses: number
+  debt_payments: number
+  variable_expenses: number
+}
 

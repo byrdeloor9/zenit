@@ -286,6 +286,7 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
     def projections(self, request):
         """Get financial projections for the next N months (income and expenses)"""
         months = int(request.query_params.get('months', 12))
+        include_variable = request.query_params.get('include_variable', 'true').lower() == 'true'
         
         # Get all active recurring transactions for the authenticated user
         active_income_transactions = RecurringTransaction.objects.filter(
@@ -298,6 +299,56 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
             user=request.user,
             transaction_type='Expense'
         )
+        
+        # Calculate variable spending average (last 3 months)
+        variable_spending_avg = Decimal('0')
+        if include_variable:
+            # Get IDs of all recurring transactions to exclude them
+            recurring_transaction_ids = set()
+            for rt in RecurringTransaction.objects.filter(user=request.user, is_active=True):
+                # Get transactions created by this recurring transaction
+                # Note: This assumes transactions have a description matching the recurring transaction
+                # You might need to adjust this logic based on your actual data model
+                pass
+            
+            # Calculate date range for last 3 months
+            today = date.today()
+            three_months_ago = today.replace(day=1) - timedelta(days=1)
+            for _ in range(2):
+                three_months_ago = three_months_ago.replace(day=1) - timedelta(days=1)
+            three_months_ago = three_months_ago.replace(day=1)
+            
+            # Get all non-recurring expenses (expenses not linked to recurring transactions)
+            # This is a simplified approach - ideally you'd track which transactions came from recurring ones
+            all_expenses = Transaction.objects.filter(
+                user=request.user,
+                type='Expense',
+                transaction_date__gte=three_months_ago,
+                transaction_date__lte=today
+            ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+            
+            # Calculate recurring expenses total for the same period
+            recurring_expenses_total = Decimal('0')
+            for expense in active_expense_transactions:
+                # Estimate how many times this recurring expense occurred in 3 months
+                if expense.frequency == 'monthly':
+                    recurring_expenses_total += expense.amount * 3
+                elif expense.frequency == 'biweekly':
+                    recurring_expenses_total += expense.amount * 6
+                elif expense.frequency == 'weekly':
+                    recurring_expenses_total += expense.amount * 12
+            
+            # Add debt payments for 3 months
+            active_debts = Debt.objects.filter(status='Active', user=request.user)
+            debt_payments_total = sum(Decimal(str(d.monthly_payment)) * 3 for d in active_debts)
+            
+            # Variable spending = Total expenses - Recurring expenses - Debt payments
+            variable_spending_total = all_expenses - recurring_expenses_total - debt_payments_total
+            if variable_spending_total < 0:
+                variable_spending_total = Decimal('0')
+            
+            # Average per month
+            variable_spending_avg = variable_spending_total / 3
         
         # Calculate projections by month
         projections_list = []
@@ -333,8 +384,9 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
                 
                 projected_income += income.amount * occurrences
             
-            # Calculate projected expenses (recurring expenses + debts)
+            # Calculate projected expenses (recurring expenses + debts + variable spending)
             projected_expenses = Decimal('0')
+            recurring_expenses = Decimal('0')
             
             # Add recurring expense transactions
             for expense in active_expense_transactions:
@@ -357,11 +409,18 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
                     # Approximately 4 weeks per month
                     occurrences = 4
                 
-                projected_expenses += expense.amount * occurrences
+                recurring_expenses += expense.amount * occurrences
+            
+            projected_expenses += recurring_expenses
             
             # Add debt payments
             active_debts = Debt.objects.filter(status='Active', user=request.user)
-            projected_expenses += sum(Decimal(str(d.monthly_payment)) for d in active_debts)
+            debt_payments = sum(Decimal(str(d.monthly_payment)) for d in active_debts)
+            projected_expenses += debt_payments
+            
+            # Add variable spending estimate
+            if include_variable:
+                projected_expenses += variable_spending_avg
             
             # Calculate net balance
             net_balance = projected_income - projected_expenses
@@ -376,6 +435,9 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
                 'month_name': month_name,
                 'projected_income': float(projected_income),
                 'projected_expenses': float(projected_expenses),
+                'recurring_expenses': float(recurring_expenses),
+                'debt_payments': float(debt_payments),
+                'variable_expenses': float(variable_spending_avg) if include_variable else 0,
                 'net_balance': float(net_balance),
                 'cumulative_balance': float(cumulative_balance)
             })
@@ -384,7 +446,9 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
             'projections': projections_list,
             'total_monthly_income': float(sum(p['projected_income'] for p in projections_list) / len(projections_list)),
             'total_monthly_expenses': float(sum(p['projected_expenses'] for p in projections_list) / len(projections_list)),
-            'average_net_balance': float(sum(p['net_balance'] for p in projections_list) / len(projections_list))
+            'average_net_balance': float(sum(p['net_balance'] for p in projections_list) / len(projections_list)),
+            'variable_spending_estimate': float(variable_spending_avg),
+            'include_variable': include_variable
         })
 
 

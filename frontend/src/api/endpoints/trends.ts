@@ -24,3 +24,29 @@ export const getCategoryTrend = async (
   return response.data
 }
 
+export const getGlobalTrends = async (months: number = 12): Promise<import('../../types/models').GlobalTrends> => {
+  const response = await apiClient.get<import('../../types/models').GlobalTrends>('/trends/global-trends/', {
+    params: { months }
+  })
+  return response.data
+}
+
+export const getCategoryDistribution = async (
+  startDate?: string,
+  endDate?: string
+): Promise<import('../../types/models').CategoryDistribution> => {
+  const response = await apiClient.get<import('../../types/models').CategoryDistribution>('/trends/category-distribution/', {
+    params: { start_date: startDate, end_date: endDate }
+  })
+  return response.data
+}
+
+export const getSpendingComparison = async (
+  period: 'month' | 'year' = 'month'
+): Promise<import('../../types/models').SpendingComparison> => {
+  const response = await apiClient.get<import('../../types/models').SpendingComparison>('/trends/comparison/', {
+    params: { period }
+  })
+  return response.data
+}
+

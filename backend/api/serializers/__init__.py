@@ -7,7 +7,19 @@ from .transaction import CategorySerializer, TransactionSerializer
 from .financial import BudgetSerializer, BudgetHistorySerializer, GoalSerializer, TransferSerializer, DebtSerializer, DebtPaymentSerializer, RecurringTransactionSerializer
 from .investment import InvestmentSerializer, InvestmentTransactionSerializer
 from .dashboard import DashboardStatsSerializer
-from .trends import CategoryTrendSerializer, CategoryOverviewSerializer, MonthlyDataSerializer, TrendsOverviewSerializer
+from .trends import (
+    CategoryTrendSerializer, 
+    CategoryOverviewSerializer, 
+    MonthlyDataSerializer, 
+    TrendsOverviewSerializer,
+    GlobalTrendsSerializer,
+    GlobalMonthlyDataSerializer,
+    CategoryDistributionSerializer,
+    CategoryDistributionItemSerializer,
+    SpendingComparisonSerializer,
+    PeriodDataSerializer,
+    ChangeDataSerializer
+)
 
 __all__ = [
     'UserSerializer',
@@ -32,6 +44,13 @@ __all__ = [
     'CategoryOverviewSerializer',
     'MonthlyDataSerializer',
     'TrendsOverviewSerializer',
+    'GlobalTrendsSerializer',
+    'GlobalMonthlyDataSerializer',
+    'CategoryDistributionSerializer',
+    'CategoryDistributionItemSerializer',
+    'SpendingComparisonSerializer',
+    'PeriodDataSerializer',
+    'ChangeDataSerializer',
 ]
 
 
