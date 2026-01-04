@@ -17,7 +17,7 @@ if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # Serve frontend - catch all route (must be last)
+# Only catch routes that DON'T start with /api/ or /admin/
 urlpatterns += [
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
+    re_path(r'^(?!api/)(?!admin/).*$', TemplateView.as_view(template_name='index.html')),
 ]
-
