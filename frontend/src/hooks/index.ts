@@ -17,4 +17,6 @@ export { useTrends } from './useTrends'
 export { useDebounce } from './useDebounce'
 export { useLocalStorage } from './useLocalStorage'
 export { useToggle } from './useToggle'
+export { useTransactionFilters } from './useTransactionFilters'
+export { useFormValidation } from './useFormValidation'
 

@@ -9,6 +9,7 @@ export interface Transaction {
   account_name: string
   category_id: number | null
   category_name: string
+  category_icon: string | null
   type: 'Income' | 'Expense'
   amount: string
   description: string | null

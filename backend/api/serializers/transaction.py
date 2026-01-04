@@ -15,6 +15,7 @@ class CategorySerializer(serializers.ModelSerializer[Category]):
 class TransactionSerializer(serializers.ModelSerializer[Transaction]):
     # Read-only fields for display
     category_name = serializers.CharField(source='category.name', read_only=True)
+    category_icon = serializers.CharField(source='category.icon', read_only=True, allow_null=True)
     account_name = serializers.CharField(source='account.name', read_only=True)
     user_id = serializers.IntegerField(source='user.id', read_only=True)
     account_id = serializers.IntegerField(source='account.id', read_only=True)
@@ -93,7 +94,7 @@ class TransactionSerializer(serializers.ModelSerializer[Transaction]):
         model = Transaction
         fields = [
             'id', 'user', 'user_id', 'account', 'account_id', 'account_name', 
-            'category', 'category_id', 'category_name',
+            'category', 'category_id', 'category_name', 'category_icon',
             'type', 'amount', 'description', 'transaction_date', 'created_at'
         ]
         read_only_fields = ['id', 'created_at', 'user']

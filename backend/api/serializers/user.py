@@ -66,14 +66,42 @@ class RegisterSerializer(serializers.ModelSerializer[User]):
             # Income categories
             {'name': 'Sueldo', 'type': 'Income', 'icon': '💰'},
             {'name': 'Bonificaciones', 'type': 'Income', 'icon': '🎁'},
-            {'name': 'Cobro de Préstamos', 'type': 'Income', 'icon': '💵'},
+            {'name': 'Freelance', 'type': 'Income', 'icon': '💼'},
+            {'name': 'Inversiones', 'type': 'Income', 'icon': '📈'},
+            {'name': 'Ventas', 'type': 'Income', 'icon': '💵'},
+            {'name': 'Otros Ingresos', 'type': 'Income', 'icon': '💸'},
             
-            # Expense categories
+            # Expense categories - Housing & Utilities
             {'name': 'Renta', 'type': 'Expense', 'icon': '🏠'},
+            {'name': 'Servicios', 'type': 'Expense', 'icon': '💡'},
+            
+            # Transportation
+            {'name': 'Transporte', 'type': 'Expense', 'icon': '🚌'},
             {'name': 'Vehículo', 'type': 'Expense', 'icon': '🚗'},
-            {'name': 'Restaurantes', 'type': 'Expense', 'icon': '🍽️'},
+            
+            # Food & Dining
             {'name': 'Supermercado', 'type': 'Expense', 'icon': '🛒'},
+            {'name': 'Restaurantes', 'type': 'Expense', 'icon': '🍽️'},
+            
+            # Health & Personal
             {'name': 'Salud', 'type': 'Expense', 'icon': '⚕️'},
+            {'name': 'Farmacia', 'type': 'Expense', 'icon': '💊'},
+            
+            # Entertainment & Lifestyle
+            {'name': 'Entretenimiento', 'type': 'Expense', 'icon': '🎬'},
+            {'name': 'Suscripciones', 'type': 'Expense', 'icon': '📺'},
+            {'name': 'Ropa', 'type': 'Expense', 'icon': '👕'},
+            
+            # Education & Technology
+            {'name': 'Educación', 'type': 'Expense', 'icon': '📚'},
+            {'name': 'Tecnología', 'type': 'Expense', 'icon': '💻'},
+            
+            # Financial
+            {'name': 'Seguros', 'type': 'Expense', 'icon': '🛡️'},
+            {'name': 'Impuestos', 'type': 'Expense', 'icon': '📋'},
+            
+            # Other
+            {'name': 'Otros Gastos', 'type': 'Expense', 'icon': '📦'},
         ]
         
         for cat_data in default_categories:
