@@ -1,5 +1,5 @@
 /**
- * BudgetForm component - Create/Edit budget form
+ * BudgetForm component - Create/Edit budget form (Monthly Budgets)
  */
 
 import { useState, useEffect, useMemo } from 'react'
@@ -30,21 +30,9 @@ export function BudgetForm({
   categories,
   loading,
 }: BudgetFormProps): JSX.Element {
-  // Calculate end_date based on months
-  const calculateEndDateFromMonths = (startDate: string, months: number): string => {
-    const date = new Date(startDate)
-    date.setMonth(date.getMonth() + months)
-    date.setDate(date.getDate() - 1) // Last day of period
-    return date.toISOString().split('T')[0]
-  }
-
   const [formData, setFormData] = useState<BudgetFormData>({
     category: 0,
     amount: '',
-    months: 1,  // Default to 1 month
-    start_date: new Date().toISOString().split('T')[0],
-    end_date: calculateEndDateFromMonths(new Date().toISOString().split('T')[0], 1),
-    is_indefinite: false,
     is_recurring: false,
     change_reason: '',
   })
@@ -60,38 +48,17 @@ export function BudgetForm({
   useEffect(() => {
     if (budget) {
       // When editing
-      const isIndefinite = budget.period_end === null
-      let monthsDiff = null
-
-      if (!isIndefinite && budget.period_end) {
-        const start = new Date(budget.period_start)
-        const end = new Date(budget.period_end)
-        monthsDiff = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth())
-      }
-
       setFormData({
         category: budget.category_id,
         amount: budget.amount,
-        months: monthsDiff,
-        start_date: budget.period_start,
-        end_date: budget.period_end || '',
-        is_indefinite: isIndefinite,
         is_recurring: budget.is_recurring,
         change_reason: '',
       })
     } else {
       // New budget
-      const today = new Date()
-      const startDate = today.toISOString().split('T')[0]
-      const endDate = calculateEndDateFromMonths(startDate, 1)
-
       setFormData({
         category: expenseCategories.length > 0 ? expenseCategories[0].id : 0,
         amount: '',
-        months: 1,
-        start_date: startDate,
-        end_date: endDate,
-        is_indefinite: false,
         is_recurring: false,
         change_reason: '',
       })
@@ -110,24 +77,6 @@ export function BudgetForm({
       newErrors.amount = 'El monto debe ser mayor a 0'
     }
 
-    if (!formData.start_date) {
-      newErrors.start_date = 'La fecha de inicio es requerida'
-    }
-
-    // end_date is only required if NOT indefinite
-    if (!formData.is_indefinite && !formData.end_date) {
-      newErrors.end_date = 'La fecha de fin es requerida'
-    }
-
-    if (!formData.is_indefinite && formData.end_date && formData.start_date && formData.end_date <= formData.start_date) {
-      newErrors.end_date = 'La fecha de fin debe ser posterior a la fecha de inicio'
-    }
-
-    // Validate months if provided and NOT indefinite
-    if (!formData.is_indefinite && formData.months !== null && formData.months <= 0) {
-      newErrors.months = 'El plazo debe ser mayor a 0'
-    }
-
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -136,10 +85,8 @@ export function BudgetForm({
     e.preventDefault()
 
     if (!validate()) {
-
       return
     }
-
 
     await onSubmit(formData)
     onClose()
@@ -151,29 +98,14 @@ export function BudgetForm({
     const value = e.target.value
 
     setFormData((prev: BudgetFormData) => {
-      let parsedValue: string | number | null = value
+      let parsedValue: string | number | boolean = value
 
       // Parse numeric fields
-      if (field === 'months' || field === 'category') {
-        parsedValue = value === '' ? (field === 'months' ? null : 0) : parseInt(value)
+      if (field === 'category') {
+        parsedValue = value === '' ? 0 : parseInt(value)
       }
 
-      const updated = { ...prev, [field]: parsedValue }
-
-      // Auto-calculate end_date when months changes
-      if (field === 'months') {
-        const months = parseInt(value) || 0
-        if (months > 0) {
-          updated.end_date = calculateEndDateFromMonths(prev.start_date, months)
-        }
-      }
-
-      // Recalculate end_date when start_date changes and months is set
-      if (field === 'start_date' && prev.months && prev.months > 0) {
-        updated.end_date = calculateEndDateFromMonths(value, prev.months)
-      }
-
-      return updated
+      return { ...prev, [field]: parsedValue }
     })
 
     if (errors[field]) {
@@ -182,19 +114,25 @@ export function BudgetForm({
   }
 
   return (
-    <Modal open={open} onClose={onClose} size="xl">
+    <Modal open={open} onClose={onClose} size="lg">
       <Card
         title={
           <div className="flex items-center gap-3 pb-2 border-b-2 border-indigo-500">
             <span className="text-2xl">💰</span>
             <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
-              {budget ? 'Editar Presupuesto' : 'Nuevo Presupuesto'}
+              {budget ? 'Editar Presupuesto' : 'Nuevo Presupuesto Mensual'}
             </span>
           </div>
         }
-        description="Establece límites de gasto para mantener el control de tus finanzas"
+        description="Establece un límite de gasto mensual para controlar tus finanzas"
       >
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Info Alert */}
+          <Alert
+            type="info"
+            message="El presupuesto se aplicará al mes actual y calculará automáticamente tus gastos del mes."
+          />
+
           {/* Category and Amount */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Select
@@ -219,7 +157,7 @@ export function BudgetForm({
 
             <Input
               id="amount"
-              label="Monto del Presupuesto"
+              label="Presupuesto Mensual"
               type="number"
               value={formData.amount}
               onChange={handleChange('amount')}
@@ -231,86 +169,30 @@ export function BudgetForm({
             />
           </div>
 
-          {/* Indefinite Budget Toggle */}
+          {/* Recurring Toggle */}
           <Toggle
-            label="∞ Presupuesto sin fecha de fin (indefinido)"
-            description="Se renovará automáticamente cada mes"
-            enabled={formData.is_indefinite || false}
+            label="🔄 Presupuesto mensual recurrente"
+            description="Este presupuesto se renovará automáticamente cada mes"
+            enabled={formData.is_recurring || false}
             setEnabled={(isChecked) => {
               setFormData(prev => ({
                 ...prev,
-                is_indefinite: isChecked,
-                end_date: isChecked ? null : (prev.months ? calculateEndDateFromMonths(prev.start_date, prev.months) : ''),
-                months: isChecked ? null : prev.months,
-                is_recurring: isChecked ? true : prev.is_recurring,
+                is_recurring: isChecked,
               }))
             }}
           />
 
-          {formData.is_indefinite && (
+          {formData.is_recurring && (
             <Alert
-              type="info"
-              message="Este presupuesto no tiene fecha de finalización y se renovará automáticamente cada mes."
+              type="success"
+              message="Este presupuesto se renovará automáticamente cada mes sin fecha de finalización."
             />
-          )}
-
-          {/* Months Duration - Solo si NO es indefinido */}
-          {!formData.is_indefinite && (
-            <Input
-              id="months"
-              label="Plazo del Presupuesto (meses)"
-              type="number"
-              value={formData.months || ''}
-              onChange={handleChange('months')}
-              error={errors.months}
-              placeholder="Ej: 1, 3, 6, 12..."
-              min="1"
-              max="120"
-            />
-          )}
-
-          {/* Dates */}
-          <div className={`grid gap-6 ${formData.is_indefinite ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
-            <Input
-              id="start_date"
-              label="Fecha de Inicio"
-              type="date"
-              value={formData.start_date}
-              onChange={handleChange('start_date')}
-              error={errors.start_date}
-              required
-            />
-
-            {!formData.is_indefinite && (
-              <Input
-                id="end_date"
-                label="Fecha de Fin"
-                type="date"
-                value={formData.end_date || ''}
-                onChange={handleChange('end_date')}
-                error={errors.end_date}
-                required
-                disabled={!!formData.months && formData.months > 0}
-              />
-            )}
-          </div>
-
-          {/* Info Messages */}
-          {!formData.is_indefinite && formData.months && formData.months > 0 && (
-            <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-              📅 La fecha de fin se calcula automáticamente: {formData.months} {formData.months === 1 ? 'mes' : 'meses'} desde la fecha de inicio
-            </div>
-          )}
-          {!formData.is_indefinite && (!formData.months || formData.months === 0) && (
-            <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
-              ✏️ Puedes editar las fechas de inicio y fin manualmente
-            </div>
           )}
 
           {/* Change Reason - Solo al editar */}
           {budget && (
             <div>
-              <label htmlFor="change_reason" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="change_reason" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Razón del cambio (opcional)
               </label>
               <textarea
@@ -319,9 +201,9 @@ export function BudgetForm({
                 onChange={handleChange('change_reason')}
                 rows={2}
                 placeholder="Ej: Ajuste por aumento de gastos..."
-                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition"
+                className="block w-full px-3 py-2 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition text-gray-900 dark:text-gray-100"
               />
-              <p className="mt-1 text-sm text-gray-500">Esto se guardará en el historial de cambios</p>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Esto se guardará en el historial de cambios</p>
             </div>
           )}
 

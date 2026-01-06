@@ -26,7 +26,7 @@ export function BudgetCard({ budget, onEdit, onDelete }: BudgetCardProps): JSX.E
   const [historyOpen, setHistoryOpen] = useState(false)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const menuOpen = Boolean(anchorEl)
-  
+
   const getStatusColor = (): string => {
     if (budget.percentage < 80) return '#10B981'
     if (budget.percentage < 100) return '#F59E0B'
@@ -52,7 +52,7 @@ export function BudgetCard({ budget, onEdit, onDelete }: BudgetCardProps): JSX.E
 
   return (
     <>
-      <div 
+      <div
         className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 h-full transition-all duration-300 hover:shadow-md group overflow-hidden relative"
         style={{ borderLeft: `4px solid ${color}` }}
       >
@@ -66,7 +66,7 @@ export function BudgetCard({ budget, onEdit, onDelete }: BudgetCardProps): JSX.E
               {budget.category_name}
             </h3>
           </div>
-          
+
           {/* Context Menu Button */}
           <button
             onClick={handleMenuClick}
@@ -76,20 +76,13 @@ export function BudgetCard({ budget, onEdit, onDelete }: BudgetCardProps): JSX.E
           </button>
         </div>
 
-        {/* Chips (solo si aplica) */}
-        {(budget.is_recurring || budget.is_indefinite) && (
+        {/* Chips (solo si es recurrente) */}
+        {budget.is_recurring && (
           <div className="flex gap-2 mb-3">
-            {budget.is_recurring && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                <LoopIcon className="text-xs" />
-                Recurrente
-              </span>
-            )}
-            {budget.is_indefinite && (
-              <span className="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-md bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
-                ∞ Indefinido
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+              <LoopIcon className="text-xs" />
+              Mensual Recurrente
+            </span>
           </div>
         )}
 
@@ -106,32 +99,21 @@ export function BudgetCard({ budget, onEdit, onDelete }: BudgetCardProps): JSX.E
         <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
           <div className="flex justify-between text-xs">
             <span className="text-gray-500 dark:text-gray-300">
-              {new Date(budget.period_start).toLocaleDateString('es-ES', { 
-                month: 'short', 
-                day: 'numeric' 
+              📅 {new Date().toLocaleDateString('es-ES', {
+                month: 'long',
+                year: 'numeric'
               })}
-              {budget.period_end ? (
-                <>
-                  {' - '}
-                  {new Date(budget.period_end).toLocaleDateString('es-ES', { 
-                    month: 'short', 
-                    day: 'numeric' 
-                  })}
-                </>
-              ) : (
-                ' - Sin fin'
-              )}
             </span>
-            
-            {budget.days_left !== null && budget.days_left >= 0 && (
+
+            {budget.days_left !== null && budget.days_left >= 0 && !budget.is_recurring && (
               <span className="font-semibold text-gray-600 dark:text-gray-300">
-                {budget.days_left === 0 ? 'Último día' : `${budget.days_left} días`}
+                {budget.days_left === 0 ? 'Último día del mes' : `${budget.days_left} días restantes`}
               </span>
             )}
-            
-            {budget.days_left === null && budget.is_indefinite && (
+
+            {budget.is_recurring && (
               <span className="font-semibold text-green-600 dark:text-green-400">
-                ∞ Sin vencimiento
+                🔄 Se renueva cada mes
               </span>
             )}
           </div>

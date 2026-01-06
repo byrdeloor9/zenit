@@ -23,8 +23,28 @@ class BudgetViewSet(viewsets.ModelViewSet[Budget]):
         return Budget.objects.filter(user=self.request.user).select_related('category', 'user')
     
     def perform_create(self, serializer):
-        """Automatically assign the authenticated user when creating a budget"""
-        serializer.save(user=self.request.user)
+        """Automatically assign the authenticated user and set monthly period when creating a budget"""
+        today = date.today()
+        month_start = today.replace(day=1)
+        
+        # Determine if it's recurring (indefinite)
+        is_recurring = serializer.validated_data.get('is_recurring', False)
+        
+        if is_recurring:
+            # Recurring budget - no end date
+            period_end = None
+        else:
+            # Set to end of current month
+            if today.month == 12:
+                period_end = today.replace(day=31)
+            else:
+                period_end = (today.replace(day=1, month=today.month + 1) - timedelta(days=1))
+        
+        serializer.save(
+            user=self.request.user,
+            period_start=month_start,
+            period_end=period_end
+        )
     
     def perform_update(self, serializer):
         """Save history when updating budget"""

@@ -39,30 +39,26 @@ class BudgetSerializer(serializers.ModelSerializer[Budget]):
         read_only_fields = ['id', 'created_at', 'updated_at', 'user']
     
     def get_spent(self, obj: Budget) -> float:
-        """Calculate total spent in this budget period for the category"""
-        # Auto-adjust period for recurring budgets if period has ended
-        period_start = obj.period_start
-        period_end = obj.period_end
+        """Calculate total spent in current month for the category"""
+        today = date.today()
         
-        if obj.is_recurring and period_end and period_end < date.today():
-            today = date.today()
-            # Set new period to current month
-            period_start = today.replace(day=1)
-            # Calculate period_end based on original duration
-            original_duration = (obj.period_end - obj.period_start).days
-            period_end = period_start + timedelta(days=original_duration)
+        # Always calculate for current month
+        month_start = today.replace(day=1)
+        
+        # Get last day of current month
+        if today.month == 12:
+            month_end = today.replace(day=31)
+        else:
+            month_end = (today.replace(day=1, month=today.month + 1) - timedelta(days=1))
         
         # Build filter conditions
         filters = {
             'user': obj.user,
             'category': obj.category,
             'type': 'Expense',
-            'transaction_date__gte': period_start,
+            'transaction_date__gte': month_start,
+            'transaction_date__lte': month_end,
         }
-        
-        # Only add period_end filter if budget has an end date
-        if period_end:
-            filters['transaction_date__lte'] = period_end
         
         result = Transaction.objects.filter(**filters).aggregate(total=Sum('amount'))
         
@@ -82,25 +78,20 @@ class BudgetSerializer(serializers.ModelSerializer[Budget]):
         return 0.0
     
     def get_days_left(self, obj: Budget) -> int | None:
-        """Calculate days left in budget period (None if indefinite)"""
-        if obj.period_end is None:
-            return None  # Indefinite budget
-        
-        # Auto-adjust period for recurring budgets if period has ended
-        period_end = obj.period_end
-        
-        if obj.is_recurring and period_end < date.today():
-            today = date.today()
-            # Set new period to current month
-            period_start = today.replace(day=1)
-            # Calculate period_end based on original duration
-            original_duration = (obj.period_end - obj.period_start).days
-            period_end = period_start + timedelta(days=original_duration)
+        """Calculate days left in current month (None if indefinite/recurring)"""
+        # Recurring budgets don't have a specific end date
+        if obj.is_recurring or obj.period_end is None:
+            return None
         
         today = date.today()
-        if period_end >= today:
-            return (period_end - today).days
-        return 0  # Budget period has ended
+        
+        # Get last day of current month
+        if today.month == 12:
+            month_end = today.replace(day=31)
+        else:
+            month_end = (today.replace(day=1, month=today.month + 1) - timedelta(days=1))
+        
+        return (month_end - today).days
     
     def get_history_count(self, obj: Budget) -> int:
         """Count of historical changes"""
