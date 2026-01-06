@@ -41,7 +41,7 @@ export function ContextMenu({ anchorEl, onClose, children }: ContextMenuProps): 
       left?: number | string
       right?: number | string
     } = {}
-    
+
     if (shouldShowAbove) {
       // Position above the button
       position.bottom = `${viewportHeight - rect.top + 4}px`
@@ -65,7 +65,7 @@ export function ContextMenu({ anchorEl, onClose, children }: ContextMenuProps): 
 
   return (
     <div className="fixed inset-0 z-50" onMouseDown={handleOverlayClick}>
-      <div 
+      <div
         className="absolute bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 min-w-[160px]"
         style={menuPosition}
         onMouseDown={(e) => e.stopPropagation()}
@@ -77,7 +77,7 @@ export function ContextMenu({ anchorEl, onClose, children }: ContextMenuProps): 
 }
 
 interface ContextMenuItemProps {
-  onClick: () => void
+  onClick: (e: React.MouseEvent) => void
   children: ReactNode
   variant?: 'default' | 'danger'
   icon?: ReactNode
@@ -85,7 +85,7 @@ interface ContextMenuItemProps {
 
 export function ContextMenuItem({ onClick, children, variant = 'default', icon }: ContextMenuItemProps): JSX.Element {
   const baseClasses = "flex items-center gap-3 w-full px-4 py-2 text-sm transition-colors"
-  
+
   const variantClasses = {
     default: "text-gray-700 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700",
     danger: "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-gray-700"

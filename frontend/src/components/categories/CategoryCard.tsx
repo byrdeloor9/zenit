@@ -1,14 +1,13 @@
 /**
- * CategoryCard component - Display individual category with responsive design
- * Mobile: Compact horizontal chip
- * Desktop: Full card layout
+ * CategoryCard component - Cyber Plate Design (Option 2)
+ * Wide, structured layout with prominent name and color accents
  */
 
 import { useState } from 'react'
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  MoreVert as MoreVertIcon,
+  MoreVert as MoreVertIcon
 } from '@mui/icons-material'
 import { ContextMenu, ContextMenuItem } from '../ui/ContextMenu'
 import type { Category } from '../../types'
@@ -19,14 +18,18 @@ interface CategoryCardProps {
   onDelete: (id: number) => void
 }
 
-const INCOME_COLOR = '#10B981'
-const EXPENSE_COLOR = '#F43F5E'
-
 export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps): JSX.Element {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const menuOpen = Boolean(anchorEl)
-  
-  const color = category.type === 'Income' ? INCOME_COLOR : EXPENSE_COLOR
+
+  const isIncome = category.type === 'Income'
+
+  // Colors for "Cyber Plate" design - Bolder & More Representative
+  // Emerald lighter (400), Rose darker (600) for better distinction
+  const borderColor = isIncome ? 'border-b-emerald-400 dark:border-b-emerald-400' : 'border-b-rose-600 dark:border-b-rose-500'
+  // Increased opacity for better visibility (from /30 to /50)
+  const iconColor = isIncome ? 'text-emerald-400/50 dark:text-emerald-300/50' : 'text-rose-600/50 dark:text-rose-400/50'
+  const hoverShadow = isIncome ? 'hover:shadow-emerald-400/20' : 'hover:shadow-rose-500/20'
+  const bgColor = 'bg-white dark:bg-gray-800'
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>): void => {
     event.stopPropagation()
@@ -45,97 +48,47 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps):
 
   return (
     <>
-      {/* Mobile: Compact Chip Design */}
-      <div 
-        className="md:hidden flex items-center gap-3 bg-white dark:bg-gray-800 rounded-lg p-3 border-l-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer group"
-        style={{ borderLeftColor: color }}
+      <div
+        className={`
+          group relative overflow-hidden rounded-xl transition-all duration-300
+          ${bgColor}
+          border border-gray-200 dark:border-gray-700
+          ${borderColor} border-b-[6px]
+          shadow-sm hover:shadow-xl hover:-translate-y-1 ${hoverShadow}
+          cursor-pointer flex items-center p-5 min-h-[90px]
+        `}
       >
-        {/* Icono pequeño */}
-        <div 
-          className="w-8 h-8 rounded-full flex items-center justify-center text-lg flex-shrink-0"
-          style={{ 
-            background: color,
-            boxShadow: `0 2px 8px ${color}40`
-          }}
+        {/* Action Menu Button (Top Right) */}
+        <button
+          onClick={handleMenuClick}
+          className="absolute top-2 right-2 p-1.5 rounded-lg text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10 transition-colors z-20"
         >
-          {category.icon || (category.type === 'Income' ? '💰' : '💸')}
-        </div>
-
-        {/* Nombre */}
-        <span className="flex-1 text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-          {category.name}
-        </span>
-
-        {/* Badge tipo */}
-        <span 
-          className="text-xs px-2 py-1 rounded-full font-semibold uppercase flex-shrink-0"
-          style={{
-            background: category.type === 'Income' ? `${INCOME_COLOR}20` : `${EXPENSE_COLOR}20`,
-            color: color
-          }}
-        >
-          {category.type === 'Income' ? 'I' : 'E'}
-        </span>
-
-        {/* Menú */}
-        <button 
-          onClick={(e) => {
-            e.stopPropagation()
-            handleMenuClick(e)
-          }}
-          className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none flex-shrink-0"
-          aria-label="Opciones de categoría"
-        >
-          <MoreVertIcon className="text-gray-600 dark:text-gray-400" fontSize="small" />
-        </button>
-      </div>
-
-      {/* Desktop: Full Card Design */}
-      <div 
-        className="hidden md:block bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 h-full cursor-pointer transition-shadow duration-200 group overflow-hidden relative"
-        style={{ 
-          borderTop: `4px solid ${color}`,
-          background: `linear-gradient(135deg, ${color}20, ${color}10)`
-        }}
-      >
-        {/* Menú en esquina superior derecha */}
-        <button 
-          onClick={(e) => {
-            e.stopPropagation()
-            handleMenuClick(e)
-          }}
-          className="absolute top-2 right-2 p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 z-10"
-          aria-label="Opciones de categoría"
-        >
-          <MoreVertIcon className="text-gray-600 dark:text-gray-100" fontSize="small" />
+          <MoreVertIcon fontSize="small" />
         </button>
 
-        {/* Contenido centrado */}
-        <div className="text-center relative h-full flex flex-col justify-center items-center">
-          {/* Icono grande centrado */}
-          <div 
-            className="w-14 h-14 rounded-full flex items-center justify-center text-3xl mb-3 mx-auto shadow-lg"
-            style={{ 
-              background: color,
-              boxShadow: `0 6px 20px ${color}40`
-            }}
-          >
-            {category.icon || (category.type === 'Income' ? '💰' : '💸')}
-          </div>
-
-          {/* Nombre centrado */}
-          <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 min-h-[2.5rem] max-h-[2.5rem] px-2 overflow-hidden">
+        {/* Left Side: Name & Type */}
+        <div className="flex-1 pr-16 z-10">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white leading-tight mb-1.5">
             {category.name}
           </h3>
-
-          {/* Tipo centrado */}
-          <span className="text-xs text-gray-600 dark:text-gray-300 font-semibold uppercase tracking-wide">
-            {category.type === 'Income' ? 'Ingreso' : 'Gasto'}
+          <span className={`
+            text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm
+            ${isIncome ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-900/50 dark:text-rose-300'}
+          `}>
+            {isIncome ? 'Ingreso' : 'Gasto'}
           </span>
+        </div>
+
+        {/* Right Side: Large Watermark Icon */}
+        <div className={`
+          absolute right-3 bottom-[-6px] text-6xl transform group-hover:scale-110 transition-all duration-300 origin-bottom-right
+          ${iconColor} opacity-90 group-hover:opacity-100 group-hover:grayscale-0
+        `}>
+          {category.icon || (isIncome ? '💰' : '💸')}
         </div>
       </div>
 
-      {/* Menu Contextual */}
+      {/* Context Menu */}
       <ContextMenu anchorEl={anchorEl} onClose={handleMenuClose}>
         <ContextMenuItem onClick={handleMenuAction(() => onEdit(category))} icon={<EditIcon fontSize="small" />}>
           Editar
@@ -147,4 +100,3 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps):
     </>
   )
 }
-

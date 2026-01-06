@@ -9,7 +9,6 @@ import { CategoryCard } from './CategoryCard'
 import { CategoryForm } from './CategoryForm'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
-import { Select } from '../ui/Select'
 import { Alert } from '../ui/Alert'
 import { Card } from '../ui/Card'
 import type { Category } from '../../types'
@@ -96,40 +95,47 @@ export function CategoryList(): JSX.Element {
 
   return (
     <div className="space-y-6">
-      {/* Stats Bar + Filters Combined */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Stats - 70% en desktop */}
-          <div className="flex-1">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="flex flex-col justify-center">
-                <p className="text-sm uppercase font-semibold text-gray-500 dark:text-gray-300 mb-2">Categorías</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{categories.length}</p>
-              </div>
-              <div className="flex flex-col justify-center">
-                <p className="text-sm uppercase font-semibold text-gray-500 dark:text-gray-300 mb-2">Ingresos</p>
-                <p className="text-3xl font-bold text-green-600 dark:text-green-400">{incomeCount}</p>
-              </div>
-              <div className="flex flex-col justify-center">
-                <p className="text-sm uppercase font-semibold text-gray-500 dark:text-gray-300 mb-2">Gastos</p>
-                <p className="text-3xl font-bold text-red-600 dark:text-red-400">{expenseCount}</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Filters - 30% en desktop, stack en móvil */}
-          <div className="lg:w-64 space-y-3">
-            <Select
-              id="typeFilter"
-              label=""
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            >
-              <option value="all">Todos</option>
-              <option value="Income">Ingresos</option>
-              <option value="Expense">Gastos</option>
-            </Select>
-          </div>
+      {/* Floating Pills Stats & Filters */}
+      <div className="flex flex-wrap lg:flex-nowrap items-center gap-4 bg-transparent">
+        {/* Stats Pills */}
+        <div className="flex flex-wrap gap-3 flex-1">
+          <button
+            onClick={() => setTypeFilter('all')}
+            className={`px-4 py-2 rounded-full shadow-sm border flex items-center gap-2 transition-all ${typeFilter === 'all'
+                ? 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-500 ring-2 ring-gray-200 dark:ring-gray-600'
+                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300'
+              }`}
+          >
+            <span className="text-xl">📂</span>
+            <span className={`font-semibold ${typeFilter === 'all' ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-200'}`}>
+              {categories.length}
+            </span>
+            <span className="text-xs text-gray-500 uppercase font-medium ml-1">Total</span>
+          </button>
+
+          <button
+            onClick={() => setTypeFilter(typeFilter === 'Income' ? 'all' : 'Income')}
+            className={`px-4 py-2 rounded-full shadow-sm border flex items-center gap-2 transition-all ${typeFilter === 'Income'
+              ? 'bg-emerald-100 border-emerald-300 text-emerald-800'
+              : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-emerald-300'
+              }`}
+          >
+            <span className="text-xl">💰</span>
+            <span className="font-semibold">{incomeCount}</span>
+            <span className="text-xs uppercase font-medium ml-1 opacity-70">Ingresos</span>
+          </button>
+
+          <button
+            onClick={() => setTypeFilter(typeFilter === 'Expense' ? 'all' : 'Expense')}
+            className={`px-4 py-2 rounded-full shadow-sm border flex items-center gap-2 transition-all ${typeFilter === 'Expense'
+              ? 'bg-rose-100 border-rose-300 text-rose-800'
+              : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:border-rose-300'
+              }`}
+          >
+            <span className="text-xl">💸</span>
+            <span className="font-semibold">{expenseCount}</span>
+            <span className="text-xs uppercase font-medium ml-1 opacity-70">Gastos</span>
+          </button>
         </div>
       </div>
 
@@ -138,41 +144,41 @@ export function CategoryList(): JSX.Element {
         <Alert type="error" message={error} />
       )}
 
-      {/* Categories Grid */}
+      {/* Categories Grid - Wide Layout (Cyber Plate) */}
       {filteredCategories.length === 0 ? (
         <Card className="text-center py-12">
           <div className="text-6xl mb-4">📂</div>
           <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">
-              {categories.length === 0
-                ? 'No tienes categorías aún'
-                : 'No se encontraron categorías'}
+            {categories.length === 0
+              ? 'No tienes categorías aún'
+              : 'No se encontraron categorías'}
           </h3>
           <p className="text-gray-500 dark:text-gray-500">
-              {categories.length === 0
-                ? 'Haz clic en el botón flotante para crear tu primera categoría'
-                : 'Intenta cambiar el filtro para ver más resultados'}
+            {categories.length === 0
+              ? 'Haz clic en el botón flotante para crear tu primera categoría'
+              : 'Intenta cambiar el filtro para ver más resultados'}
           </p>
         </Card>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-6">
-            {filteredCategories.map((category) => (
-              <CategoryCard
-                key={category.id}
-                category={category}
-                onEdit={handleOpenForm}
-                onDelete={handleDeleteClick}
-              />
-            ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {filteredCategories.map((category) => (
+            <CategoryCard
+              key={category.id}
+              category={category}
+              onEdit={handleOpenForm}
+              onDelete={handleDeleteClick}
+            />
+          ))}
         </div>
       )}
 
       {/* FAB Button */}
       <button
-          onClick={() => handleOpenForm()}
+        onClick={() => handleOpenForm()}
         className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
         title="Nueva Categoría"
-        >
-          <AddIcon />
+      >
+        <AddIcon />
       </button>
 
       {/* Category Form Dialog */}
@@ -189,15 +195,15 @@ export function CategoryList(): JSX.Element {
         <Card title="Eliminar Categoría">
           <div className="space-y-4">
             <p className="text-gray-600 dark:text-gray-300">
-            ¿Estás seguro de que deseas eliminar esta categoría? Las transacciones asociadas quedarán sin categoría.
+              ¿Estás seguro de que deseas eliminar esta categoría? Las transacciones asociadas quedarán sin categoría.
             </p>
             <div className="flex justify-end gap-3">
               <Button variant="secondary" onClick={handleCancelDelete}>
                 Cancelar
               </Button>
               <Button variant="danger" onClick={handleConfirmDelete}>
-            Eliminar
-          </Button>
+                Eliminar
+              </Button>
             </div>
           </div>
         </Card>
@@ -205,4 +211,3 @@ export function CategoryList(): JSX.Element {
     </div>
   )
 }
-
