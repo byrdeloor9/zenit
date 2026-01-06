@@ -3,7 +3,7 @@
  */
 
 import { useEffect, useState } from 'react'
-import { Add as AddIcon, MoreVert, Edit as EditIcon, Delete as DeleteIcon, History as HistoryIcon, Loop as LoopIcon } from '@mui/icons-material'
+import { Add as AddIcon } from '@mui/icons-material'
 import { useBudgets, useCategories } from '../../hooks'
 import { BudgetCard } from './BudgetCard'
 import { BudgetForm } from './BudgetForm'
@@ -11,11 +11,6 @@ import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
 import { Alert } from '../ui/Alert'
 import { Card } from '../ui/Card'
-import { Table, TableRow, TableCell } from '../ui/Table'
-import { ProgressBar } from '../ui/ProgressBar'
-import { ContextMenu, ContextMenuItem } from '../ui/ContextMenu'
-import { formatCurrency } from '../../utils/formatters'
-import { BudgetHistoryDialog } from './BudgetHistoryDialog'
 import type { BudgetFormData, BudgetWithProgress } from '../../api/endpoints/budgets'
 
 export function BudgetList(): JSX.Element {
@@ -38,9 +33,6 @@ export function BudgetList(): JSX.Element {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selectedBudget, setSelectedBudget] = useState<BudgetWithProgress | null>(null)
   const [budgetToDelete, setBudgetToDelete] = useState<number | null>(null)
-  const [historyOpen, setHistoryOpen] = useState(false)
-  const [selectedBudgetForHistory, setSelectedBudgetForHistory] = useState<BudgetWithProgress | null>(null)
-  const [menuAnchor, setMenuAnchor] = useState<{ anchorEl: HTMLElement | null; budget: BudgetWithProgress | null }>({ anchorEl: null, budget: null })
 
   useEffect(() => {
     fetchBudgets()
@@ -85,31 +77,6 @@ export function BudgetList(): JSX.Element {
     setBudgetToDelete(null)
   }
 
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, budget: BudgetWithProgress): void => {
-    event.stopPropagation()
-    setMenuAnchor({ anchorEl: event.currentTarget, budget })
-  }
-
-  const handleMenuClose = (): void => {
-    setMenuAnchor({ anchorEl: null, budget: null })
-  }
-
-  const handleMenuAction = (action: () => void) => (e: React.MouseEvent): void => {
-    e.stopPropagation()
-    action()
-    handleMenuClose()
-  }
-
-  const handleOpenHistory = (budget: BudgetWithProgress): void => {
-    setSelectedBudgetForHistory(budget)
-    setHistoryOpen(true)
-  }
-
-  const handleCloseHistory = (): void => {
-    setHistoryOpen(false)
-    setSelectedBudgetForHistory(null)
-  }
-
   // Calculate stats
   const activeBudgets = budgets.filter(b => b.status === 'Active')
   const totalBudgeted = activeBudgets.reduce((sum, b) => sum + parseFloat(b.amount), 0)
@@ -127,27 +94,25 @@ export function BudgetList(): JSX.Element {
 
   return (
     <div className="space-y-6">
-      {/* Stats Bar */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="flex flex-col justify-center">
-            <p className="text-sm uppercase font-semibold text-gray-500 dark:text-gray-300 mb-2">Presupuestos Activos</p>
-            <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">{activeBudgetsCount}</p>
-          </div>
-          <div className="flex flex-col justify-center">
-            <p className="text-sm uppercase font-semibold text-gray-500 dark:text-gray-300 mb-2">Total Presupuestado</p>
-            <p className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">${totalBudgeted.toLocaleString()}</p>
-          </div>
-          <div className="flex flex-col justify-center">
-            <p className="text-sm uppercase font-semibold text-gray-500 dark:text-gray-300 mb-2">Total Gastado</p>
-            <p className="text-3xl font-bold text-red-600 dark:text-red-400">${totalSpent.toLocaleString()}</p>
-          </div>
-          <div className="flex flex-col justify-center">
-            <p className="text-sm uppercase font-semibold text-gray-500 dark:text-gray-300 mb-2">Disponible</p>
-            <p className={`text-3xl font-bold ${totalRemaining >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-              ${totalRemaining.toLocaleString()}
-            </p>
-          </div>
+      {/* Stats Bar - Pill Style */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
+          <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Activos</span>
+          <span className="text-sm font-bold text-gray-900 dark:text-gray-100">{activeBudgetsCount}</span>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-full">
+          <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">Presupuestado</span>
+          <span className="text-sm font-bold text-indigo-700 dark:text-indigo-300">${totalBudgeted.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 dark:bg-red-900/30 rounded-full">
+          <span className="text-xs font-medium text-red-600 dark:text-red-400">Gastado</span>
+          <span className="text-sm font-bold text-red-700 dark:text-red-300">${totalSpent.toLocaleString()}</span>
+        </div>
+        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full ${totalRemaining >= 0 ? 'bg-green-50 dark:bg-green-900/30' : 'bg-red-50 dark:bg-red-900/30'}`}>
+          <span className={`text-xs font-medium ${totalRemaining >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>Disponible</span>
+          <span className={`text-sm font-bold ${totalRemaining >= 0 ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}>
+            ${totalRemaining.toLocaleString()}
+          </span>
         </div>
       </div>
 
@@ -173,97 +138,8 @@ export function BudgetList(): JSX.Element {
         </Card>
       ) : (
         <>
-          {/* Desktop Table View */}
-          <div className="hidden lg:block">
-            <Card>
-              <Table headers={['Categoría', 'Monto', 'Gastado', 'Disponible', 'Progreso', 'Periodo', '']}>
-                {budgets.map(budget => (
-                  <TableRow key={budget.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{budget.category_icon || '📊'}</span>
-                        <div>
-                          <div className="font-medium text-gray-900 dark:text-gray-100">
-                            {budget.category_name}
-                          </div>
-                          {(budget.is_recurring || budget.is_indefinite) && (
-                            <div className="flex items-center gap-1 mt-0.5">
-                              {budget.is_recurring && (
-                                <span className="text-xs text-blue-600 dark:text-blue-400">
-                                  <LoopIcon fontSize="inherit" />
-                                </span>
-                              )}
-                              {budget.is_indefinite && (
-                                <span className="text-xs text-purple-600 dark:text-purple-400">∞</span>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-semibold">
-                      {formatCurrency(budget.amount)}
-                    </TableCell>
-                    <TableCell className={`font-semibold ${
-                      budget.spent && budget.spent > 0 ? 'text-red-600' : 'text-gray-600'
-                    }`}>
-                      {formatCurrency(budget.spent || 0)}
-                    </TableCell>
-                    <TableCell className={`font-semibold ${
-                      (budget.remaining || 0) >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {formatCurrency(budget.remaining || 0)}
-                    </TableCell>
-                    <TableCell>
-                      <div className="w-32">
-                        <ProgressBar 
-                          value={budget.spent || 0} 
-                          max={parseFloat(budget.amount)} 
-                          showPercentage={false}
-                        />
-                        <span className="text-xs text-gray-500 mt-0.5 inline-block">
-                          {budget.percentage.toFixed(0)}%
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {new Date(budget.period_start).toLocaleDateString('es-ES', { 
-                          month: 'short', 
-                          day: 'numeric' 
-                        })}
-                        {budget.period_end && (
-                          <>
-                            {' - '}
-                            {new Date(budget.period_end).toLocaleDateString('es-ES', { 
-                              month: 'short', 
-                              day: 'numeric' 
-                            })}
-                          </>
-                        )}
-                        {budget.days_left !== null && budget.days_left >= 0 && (
-                          <div className="mt-0.5 text-gray-600 dark:text-gray-300 font-semibold">
-                            {budget.days_left} días
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <button
-                        onClick={(e) => handleMenuClick(e, budget)}
-                        className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                      >
-                        <MoreVert className="w-5 h-5" />
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </Table>
-            </Card>
-          </div>
-
-          {/* Mobile/Tablet Card View */}
-          <div className="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Grid on desktop, Vertical Stack on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {budgets.map(budget => (
               <BudgetCard
                 key={budget.id}
@@ -311,35 +187,6 @@ export function BudgetList(): JSX.Element {
         </Card>
       </Modal>
 
-      {/* Context Menu */}
-      {menuAnchor.anchorEl && menuAnchor.budget && (
-        <ContextMenu anchorEl={menuAnchor.anchorEl} onClose={handleMenuClose}>
-          <ContextMenuItem onClick={handleMenuAction(() => handleOpenForm(menuAnchor.budget!))}>
-            <EditIcon className="text-sm" />
-            Editar
-          </ContextMenuItem>
-          {menuAnchor.budget.history_count > 0 && (
-            <ContextMenuItem onClick={handleMenuAction(() => handleOpenHistory(menuAnchor.budget!))}>
-              <HistoryIcon className="text-sm" />
-              Historial ({menuAnchor.budget.history_count})
-            </ContextMenuItem>
-          )}
-          <ContextMenuItem onClick={handleMenuAction(() => handleDeleteClick(menuAnchor.budget!.id))} destructive>
-            <DeleteIcon className="text-sm" />
-            Eliminar
-          </ContextMenuItem>
-        </ContextMenu>
-      )}
-
-      {/* History Dialog */}
-      {selectedBudgetForHistory && (
-        <BudgetHistoryDialog
-          open={historyOpen}
-          onClose={handleCloseHistory}
-          budgetId={selectedBudgetForHistory.id}
-          budgetName={selectedBudgetForHistory.category_name}
-        />
-      )}
     </div>
   )
 }
