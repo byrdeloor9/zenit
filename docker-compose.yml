@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  api:
+  zenit-backend:
     build: ./backend
     container_name: zenit-backend
     restart: unless-stopped

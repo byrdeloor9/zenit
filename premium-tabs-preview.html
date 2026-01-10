@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Tabs Preview - Zénit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        @keyframes slideUnderline {
+            from {
+                transform: translateX(var(--from-x));
+                width: var(--from-width);
+            }
+
+            to {
+                transform: translateX(var(--to-x));
+                width: var(--to-width);
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 dark:bg-gray-900 min-h-screen">
+    <!-- Main Navbar with Glassmorphism -->
+    <header
+        class="sticky top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md backdrop-saturate-150 border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-0.5 shadow-lg shadow-indigo-500/50 hover:shadow-xl hover:shadow-indigo-500/70 hover:scale-105 transition-all duration-300 cursor-pointer flex items-center justify-center">
+                        <span class="text-2xl">Z</span>
+                    </div>
+                    <span
+                        class="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent">
+                        Zénit
+                    </span>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Theme Toggle -->
+                    <button
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border border-gray-200/50 dark:border-gray-600/50 shadow-sm hover:shadow-md hover:scale-105 hover:border-indigo-400/50 transition-all duration-200 flex items-center justify-center">
+                        <span class="text-xl">🌙</span>
+                    </button>
+
+                    <!-- User -->
+                    <button
+                        class="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 border border-gray-200/50 dark:border-gray-600/50 shadow-sm hover:shadow-md hover:scale-105 hover:border-indigo-400/50 transition-all duration-200 flex items-center justify-center">
+                        <div
+                            class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center text-white text-sm font-semibold shadow-sm">
+                            BD
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Global Tabs Bar with Premium Effects -->
+    <div
+        class="sticky top-16 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md backdrop-saturate-150 border-b border-gray-200/50 dark:border-gray-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="overflow-x-auto scrollbar-hide">
+                <div class="relative flex gap-2 py-2" id="tabs-container">
+                    <!-- Tabs will be dynamically rendered -->
+                    <button onclick="setActiveTab(0)"
+                        class="tab-button relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 whitespace-nowrap rounded-t-lg hover:bg-gradient-to-b hover:from-gray-50/50 hover:to-transparent dark:hover:from-gray-700/30 dark:hover:to-transparent hover:scale-[1.02] group active text-indigo-600 dark:text-indigo-400">
+                        <span class="text-base transition-all duration-200 scale-110">🏛️</span>
+                        Cuentas
+                    </button>
+                    <button onclick="setActiveTab(1)"
+                        class="tab-button relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 whitespace-nowrap rounded-t-lg hover:bg-gradient-to-b hover:from-gray-50/50 hover:to-transparent dark:hover:from-gray-700/30 dark:hover:to-transparent hover:scale-[1.02] group text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
+                        <span class="text-base transition-all duration-200 group-hover:scale-105">💳</span>
+                        Transacciones
+                    </button>
+                    <button onclick="setActiveTab(2)"
+                        class="tab-button relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 whitespace-nowrap rounded-t-lg hover:bg-gradient-to-b hover:from-gray-50/50 hover:to-transparent dark:hover:from-gray-700/30 dark:hover:to-transparent hover:scale-[1.02] group text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
+                        <span class="text-base transition-all duration-200 group-hover:scale-105">⇆</span>
+                        Transferencias
+                    </button>
+                    <button onclick="setActiveTab(3)"
+                        class="tab-button relative flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-all duration-200 whitespace-nowrap rounded-t-lg hover:bg-gradient-to-b hover:from-gray-50/50 hover:to-transparent dark:hover:from-gray-700/30 dark:hover:to-transparent hover:scale-[1.02] group text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200">
+                        <span class="text-base transition-all duration-200 group-hover:scale-105">🏷️</span>
+                        Categorías
+                    </button>
+
+                    <!-- Animated Underline -->
+                    <div id="underline"
+                        class="absolute bottom-0 h-0.5 bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-full shadow-sm shadow-indigo-500/50 transition-all duration-300 ease-out"
+                        style="width: 0px; transform: translateX(0px);"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+            <h2 class="text-3xl font-bold mb-4 text-gray-900 dark:text-gray-100" id="content-title">Cuentas</h2>
+            <p class="text-gray-600 dark:text-gray-400">
+                Este es un preview del diseño <strong>Combo Premium Plus</strong> con:
+            </p>
+            <ul class="mt-4 space-y-2 text-gray-600 dark:text-gray-400">
+                <li>✨ <strong>Underline deslizante animado</strong> - Línea que se mueve suavemente entre tabs</li>
+                <li>🎨 <strong>Background hover con gradiente</strong> - Efecto sutil al pasar el mouse</li>
+                <li>🎭 <strong>Iconos animados</strong> - Los iconos escalan al hover y cuando están activos</li>
+                <li>💎 <strong>Glassmorphism</strong> - Fondos translúcidos con blur</li>
+            </ul>
+
+            <div
+                class="mt-8 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                <p class="text-sm text-indigo-900 dark:text-indigo-100">
+                    <strong>Nota:</strong> Haz click en diferentes tabs para ver la animación del underline deslizándose
+                    suavemente. Observa también el efecto hover en las tabs inactivas.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let activeTabIndex = 0;
+        const titles = ['Cuentas', 'Transacciones', 'Transferencias', 'Categorías'];
+
+        function setActiveTab(index) {
+            const tabs = document.querySelectorAll('.tab-button');
+            const underline = document.getElementById('underline');
+            const contentTitle = document.getElementById('content-title');
+
+            // Remove active class from all tabs
+            tabs.forEach((tab, i) => {
+                const icon = tab.querySelector('span');
+                if (i === index) {
+                    tab.classList.add('active', 'text-indigo-600', 'dark:text-indigo-400');
+                    tab.classList.remove('text-gray-600', 'dark:text-gray-400');
+                    icon.classList.add('scale-110');
+                    icon.classList.remove('group-hover:scale-105');
+                } else {
+                    tab.classList.remove('active', 'text-indigo-600', 'dark:text-indigo-400');
+                    tab.classList.add('text-gray-600', 'dark:text-gray-400');
+                    icon.classList.remove('scale-110');
+                    icon.classList.add('group-hover:scale-105');
+                }
+            });
+
+            // Animate underline
+            const activeTab = tabs[index];
+            const { offsetLeft, offsetWidth } = activeTab;
+
+            underline.style.width = `${offsetWidth}px`;
+            underline.style.transform = `translateX(${offsetLeft}px)`;
+
+            // Update content
+            contentTitle.textContent = titles[index];
+
+            activeTabIndex = index;
+        }
+
+        // Initialize underline on load
+        window.addEventListener('load', () => {
+            setActiveTab(0);
+        });
+
+        // Toggle dark mode
+        document.querySelector('button[class*="w-10 h-10 rounded-xl"]').addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+        });
+    </script>
+</body>
+
+</html>
