@@ -137,7 +137,7 @@ export function RecurringTransactionList(): JSX.Element {
   const activeTransactions = transactions.filter((t) => t.is_active)
   const activeIncomes = activeTransactions.filter((t) => t.transaction_type === 'Income')
   const activeExpenses = activeTransactions.filter((t) => t.transaction_type === 'Expense')
-  
+
   const totalMonthlyIncome = activeIncomes.reduce((sum, transaction) => {
     const amount = parseFloat(transaction.amount)
     const multiplier =
@@ -298,7 +298,7 @@ export function RecurringTransactionList(): JSX.Element {
                   }
                   const typeConfig = getTypeConfig()
                   const frequencyConfig = getFrequencyConfig()
-                  
+
                   return (
                     <TableRow key={transaction.id}>
                       <TableCell>
@@ -307,12 +307,12 @@ export function RecurringTransactionList(): JSX.Element {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span 
+                        <span
                           className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md border"
-                          style={{ 
-                            backgroundColor: `${typeConfig.color}20`, 
-                            color: typeConfig.color, 
-                            borderColor: `${typeConfig.color}40` 
+                          style={{
+                            backgroundColor: `${typeConfig.color}20`,
+                            color: typeConfig.color,
+                            borderColor: `${typeConfig.color}40`
                           }}
                         >
                           {typeConfig.icon} {typeConfig.label}
@@ -328,7 +328,7 @@ export function RecurringTransactionList(): JSX.Element {
                       </TableCell>
                       <TableCell>
                         <span className="text-xs text-gray-600 dark:text-gray-400">
-                          {transaction.next_occurrence ? new Date(transaction.next_occurrence).toLocaleDateString('es-ES') : 'N/A'}
+                          {transaction.next_occurrence ? new Date(transaction.next_occurrence + 'T12:00:00').toLocaleDateString('es-ES') : 'N/A'}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -342,12 +342,11 @@ export function RecurringTransactionList(): JSX.Element {
                         </span>
                       </TableCell>
                       <TableCell>
-                        <span 
-                          className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md border ${
-                            transaction.is_active 
-                              ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800'
-                              : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700'
-                          }`}
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md border ${transaction.is_active
+                            ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800'
+                            : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700'
+                            }`}
                         >
                           {transaction.is_active ? '🟢 Activo' : '🔴 Inactivo'}
                         </span>
@@ -446,8 +445,8 @@ export function RecurringTransactionList(): JSX.Element {
                     {selectedTransaction.frequency === 'monthly'
                       ? 'Mensual'
                       : selectedTransaction.frequency === 'biweekly'
-                      ? 'Quincenal'
-                      : 'Semanal'}
+                        ? 'Quincenal'
+                        : 'Semanal'}
                   </p>
                 </div>
                 <div>
@@ -464,7 +463,7 @@ export function RecurringTransactionList(): JSX.Element {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-300">Próxima ocurrencia</p>
-                  <p className="font-medium">{new Date(selectedTransaction.next_occurrence).toLocaleDateString('es-ES')}</p>
+                  <p className="font-medium">{new Date(selectedTransaction.next_occurrence + 'T12:00:00').toLocaleDateString('es-ES')}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-300">Transacciones generadas</p>

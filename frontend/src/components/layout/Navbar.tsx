@@ -27,6 +27,7 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { ThemeToggle } from './ThemeToggle'
+import { PremiumTabs } from './PremiumTabs'
 
 export function Navbar(): JSX.Element {
   const location = useLocation()
@@ -145,8 +146,8 @@ export function Navbar(): JSX.Element {
               <Link
                 to="/"
                 className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${isActive('/')
-                    ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
+                  ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
                   }`}
               >
                 <DashboardIcon className="mr-2 text-lg" />
@@ -158,8 +159,8 @@ export function Navbar(): JSX.Element {
                 <button
                   onClick={handleFinanceToggle}
                   className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${isCategoryActive(['/financial-management'])
-                      ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
                     }`}
                 >
                   <AccountBalance className="mr-2 text-lg" />
@@ -206,8 +207,8 @@ export function Navbar(): JSX.Element {
                 <button
                   onClick={handlePlanningToggle}
                   className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${isCategoryActive(['/planning'])
-                      ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
                     }`}
                 >
                   <Folder className="mr-2 text-lg" />
@@ -254,8 +255,8 @@ export function Navbar(): JSX.Element {
                 <button
                   onClick={handleAnalysisToggle}
                   className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all ${isCategoryActive(['/analysis'])
-                      ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
+                    ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-100'
                     }`}
                 >
                   <ShowChart className="mr-2 text-lg" />
@@ -364,6 +365,77 @@ export function Navbar(): JSX.Element {
         </div>
       </header>
 
+      {/* Global Tabs Bar - Only shown on sections with sub-pages */}
+      {(location.pathname === '/financial-management' ||
+        location.pathname === '/planning' ||
+        location.pathname === '/analysis') && (
+          <div className="sticky top-16 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md backdrop-saturate-150 border-b border-gray-200/50 dark:border-gray-700/50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="overflow-x-auto scrollbar-hide">
+                {/* Financial Management Tabs */}
+                {location.pathname === '/financial-management' && (
+                  <PremiumTabs
+                    tabs={[
+                      { id: 'accounts', label: 'Cuentas', icon: <AccountBalance />, path: '/financial-management?tab=accounts' },
+                      { id: 'transactions', label: 'Transacciones', icon: <Receipt />, path: '/financial-management?tab=transactions' },
+                      { id: 'transfers', label: 'Transferencias', icon: <SwapHoriz />, path: '/financial-management?tab=transfers' },
+                      { id: 'categories', label: 'Categorías', icon: <Category />, path: '/financial-management?tab=categories' },
+                    ]}
+                    activeTabId={
+                      location.search.includes('tab=transactions') ? 'transactions' :
+                        location.search.includes('tab=transfers') ? 'transfers' :
+                          location.search.includes('tab=categories') ? 'categories' :
+                            'accounts'
+                    }
+                    onTabClick={handleNavigate}
+                    colorScheme="indigo"
+                  />
+                )}
+
+                {/* Planning Tabs */}
+                {location.pathname === '/planning' && (
+                  <PremiumTabs
+                    tabs={[
+                      { id: 'budgets', label: 'Presupuestos', icon: <AccountBalanceWallet />, path: '/planning?tab=budgets' },
+                      { id: 'investments', label: 'Metas e Inversiones', icon: <EmojiEvents />, path: '/planning?tab=investments' },
+                      { id: 'recurring-transactions', label: 'Recurrentes', icon: <Repeat />, path: '/planning?tab=recurring-transactions' },
+                      { id: 'debts', label: 'Deudas', icon: <CreditCard />, path: '/planning?tab=debts' },
+                    ]}
+                    activeTabId={
+                      location.search.includes('tab=investments') || location.search.includes('tab=goals') ? 'investments' :
+                        location.search.includes('tab=recurring') ? 'recurring-transactions' :
+                          location.search.includes('tab=debts') ? 'debts' :
+                            'budgets'
+                    }
+                    onTabClick={handleNavigate}
+                    colorScheme="emerald"
+                  />
+                )}
+
+                {/* Analysis Tabs */}
+                {location.pathname === '/analysis' && (
+                  <PremiumTabs
+                    tabs={[
+                      { id: 'projections', label: 'Proyecciones', icon: <ShowChart />, path: '/analysis?tab=projections' },
+                      { id: 'trends', label: 'Tendencias', icon: <TrendingUp />, path: '/analysis?tab=trends' },
+                      { id: 'reports', label: 'Reportes', icon: <Assessment />, path: '/analysis?tab=reports' },
+                      { id: 'alerts', label: 'Alertas', icon: <Notifications />, path: '/analysis?tab=alerts' },
+                    ]}
+                    activeTabId={
+                      location.search.includes('tab=trends') ? 'trends' :
+                        location.search.includes('tab=reports') ? 'reports' :
+                          location.search.includes('tab=alerts') ? 'alerts' :
+                            'projections'
+                    }
+                    onTabClick={handleNavigate}
+                    colorScheme="cyan"
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
       {/* Mobile Menu Overlay - Sidebar desliza desde la derecha */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
@@ -402,8 +474,8 @@ export function Navbar(): JSX.Element {
                   <button
                     onClick={() => handleNavigate('/')}
                     className={`flex items-center w-full px-4 py-3 rounded-lg text-left transition-colors ${isActive('/')
-                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                        : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                      : 'text-gray-700 hover:bg-gray-50'
                       }`}
                   >
                     <DashboardIcon className="mr-3 text-xl" />
@@ -415,8 +487,8 @@ export function Navbar(): JSX.Element {
                     <button
                       onClick={handleFinanceToggle}
                       className={`flex items-center justify-between w-full px-4 py-3 rounded-lg text-left transition-colors ${isCategoryActive(['/financial-management'])
-                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                          : 'text-gray-700 hover:bg-gray-50'
+                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                        : 'text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       <div className="flex items-center">
@@ -465,8 +537,8 @@ export function Navbar(): JSX.Element {
                     <button
                       onClick={handlePlanningToggle}
                       className={`flex items-center justify-between w-full px-4 py-3 rounded-lg text-left transition-colors ${isCategoryActive(['/planning'])
-                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                          : 'text-gray-700 hover:bg-gray-50'
+                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                        : 'text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       <div className="flex items-center">
@@ -515,8 +587,8 @@ export function Navbar(): JSX.Element {
                     <button
                       onClick={handleAnalysisToggle}
                       className={`flex items-center justify-between w-full px-4 py-3 rounded-lg text-left transition-colors ${isCategoryActive(['/analysis'])
-                          ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
-                          : 'text-gray-700 hover:bg-gray-50'
+                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-50 dark:text-indigo-700 dark:border-indigo-200'
+                        : 'text-gray-700 hover:bg-gray-50'
                         }`}
                     >
                       <div className="flex items-center">

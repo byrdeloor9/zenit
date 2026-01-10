@@ -69,9 +69,11 @@ export function ThemeToggle({ size = 'medium' }: ThemeToggleProps): JSX.Element 
       onClick={handleClick}
       className={`
         ${sizeClasses[size]}
-        relative rounded-lg bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 
+        relative rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800
+        border border-gray-200/50 dark:border-gray-600/50
+        shadow-sm hover:shadow-md
         transition-all duration-300 ease-in-out
-        hover:scale-105 active:scale-95
+        hover:scale-105 hover:border-indigo-400/50 active:scale-95
         flex items-center justify-center
         group
       `}

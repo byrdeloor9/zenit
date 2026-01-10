@@ -50,7 +50,7 @@ export function RecurringTransactionCard({
   }
 
   const getTypeConfig = (): { icon: string; color: string; label: string } => {
-    switch (transaction.type) {
+    switch (transaction.transaction_type) {
       case 'Income':
         return { icon: '💰', color: '#10B981', label: 'Ingreso' }
       case 'Expense':
@@ -62,14 +62,12 @@ export function RecurringTransactionCard({
 
   const getFrequencyConfig = (): { icon: string; label: string } => {
     switch (transaction.frequency) {
-      case 'daily':
-        return { icon: '📅', label: 'Diario' }
-      case 'weekly':
-        return { icon: '📆', label: 'Semanal' }
       case 'monthly':
         return { icon: '🗓️', label: 'Mensual' }
-      case 'yearly':
-        return { icon: '📅', label: 'Anual' }
+      case 'biweekly':
+        return { icon: '📆', label: 'Quincenal' }
+      case 'weekly':
+        return { icon: '📅', label: 'Semanal' }
       default:
         return { icon: '🔄', label: transaction.frequency }
     }
@@ -79,7 +77,7 @@ export function RecurringTransactionCard({
   const frequencyConfig = getFrequencyConfig()
 
   return (
-    <div 
+    <div
       className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 h-full cursor-pointer transition-shadow duration-200 group overflow-hidden relative"
       style={{ borderLeft: `3px solid ${typeConfig.color}` }}
       onClick={handleCardClick}
@@ -88,24 +86,23 @@ export function RecurringTransactionCard({
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-3 flex-1">
           <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-            {typeConfig.icon} {transaction.description}
+            {typeConfig.icon} {transaction.name}
           </h3>
-          <span 
+          <span
             className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md border"
-            style={{ 
-              backgroundColor: `${typeConfig.color}20`, 
-              color: typeConfig.color, 
-              borderColor: `${typeConfig.color}40` 
+            style={{
+              backgroundColor: `${typeConfig.color}20`,
+              color: typeConfig.color,
+              borderColor: `${typeConfig.color}40`
             }}
           >
             {typeConfig.label}
           </span>
-          <span 
-            className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md border ${
-              transaction.is_active 
-                ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800'
-                : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700'
-            }`}
+          <span
+            className={`inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold rounded-md border ${transaction.is_active
+              ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800'
+              : 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700'
+              }`}
           >
             {transaction.is_active ? '🟢 Activo' : '🔴 Inactivo'}
           </span>
@@ -154,10 +151,10 @@ export function RecurringTransactionCard({
       {/* Footer Info */}
       <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-300">
         <span>
-          Próximo: {transaction.next_occurrence ? new Date(transaction.next_occurrence).toLocaleDateString('es-ES') : 'N/A'}
+          Próximo: {transaction.next_occurrence ? new Date(transaction.next_occurrence + 'T12:00:00').toLocaleDateString('es-ES') : 'N/A'}
         </span>
         <span>
-          {transaction.day_of_month ? `Día ${transaction.day_of_month}` : ''}
+          {transaction.day_of_period ? `Día ${transaction.day_of_period}` : ''}
         </span>
       </div>
 
