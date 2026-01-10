@@ -73,15 +73,22 @@ export function RecurringTransactionForm({
       })
       setIsIndefinite(!transaction.end_date)
     } else {
+      const today = new Date()
+      // Use local date string YYYY-MM-DD to avoid UTC offset issues
+      const year = today.getFullYear()
+      const month = String(today.getMonth() + 1).padStart(2, '0')
+      const day = String(today.getDate()).padStart(2, '0')
+      const todayStr = `${year}-${month}-${day}`
+
       setFormData({
         name: '',
         transaction_type: 'Income',
         amount: '',
         frequency: 'monthly',
-        day_of_period: 1,
+        day_of_period: today.getDate(), // Initialize with Today's day
         account: accounts.length > 0 ? accounts[0].id : 0,
         category: null,
-        start_date: new Date().toISOString().split('T')[0],
+        start_date: todayStr,
         end_date: null,
         is_active: true,
         notes: null,
