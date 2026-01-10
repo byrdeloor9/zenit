@@ -144,8 +144,41 @@ export function RecurringTransactionForm({
     onClose()
   }
 
+  // Auto-update day_of_period when start_date changes
+  useEffect(() => {
+    if (formData.start_date) {
+      const date = new Date(formData.start_date + 'T12:00:00')
+
+      setFormData(prev => {
+        // Only update if the value seems consistent with a user action (optional, but good UX)
+        // For now, we enforce sync to avoid errors
+        let newDay = prev.day_of_period
+
+        if (prev.frequency === 'monthly') {
+          newDay = date.getDate()
+        } else if (prev.frequency === 'weekly') {
+          // JS getDay(): 0=Sun, 1=Mon...6=Sat
+          // Model expects: 1=Mon...7=Sun (ISO) usually? 
+          // Let's check model validation: "1 (Lunes) y 7 (Domingo)"
+          const day = date.getDay()
+          newDay = day === 0 ? 7 : day
+        } else if (prev.frequency === 'biweekly') {
+          // For biweekly, if date is > 15, we subtract 15 or keep it?
+          // Model says 1-15.
+          const day = date.getDate()
+          newDay = day > 15 ? day - 15 : day
+        }
+
+        return {
+          ...prev,
+          day_of_period: newDay
+        }
+      })
+    }
+  }, [formData.start_date, formData.frequency])
+
   const handleChange = (field: keyof RecurringTransactionFormData) => (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ): void => {
     setFormData((prev) => ({ ...prev, [field]: e.target.value }))
     if (errors[field]) {
@@ -176,7 +209,7 @@ export function RecurringTransactionForm({
 
   return (
     <Modal open={open} onClose={onClose} size="xl">
-      <Card 
+      <Card
         title={
           <div className="flex items-center gap-3 pb-2 border-b-2 border-cyan-500">
             <span className="text-2xl">🔄</span>
@@ -201,11 +234,10 @@ export function RecurringTransactionForm({
                   transaction_type: 'Income',
                   category: null, // Reset category when changing type
                 }))}
-                className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 transition-all ${
-                  formData.transaction_type === 'Income'
-                    ? 'border-green-500 bg-green-50 text-green-700'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                }`}
+                className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 transition-all ${formData.transaction_type === 'Income'
+                  ? 'border-green-500 bg-green-50 text-green-700'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 <TrendingUp className="mr-2" />
                 Ingreso
@@ -217,11 +249,10 @@ export function RecurringTransactionForm({
                   transaction_type: 'Expense',
                   category: null, // Reset category when changing type
                 }))}
-                className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 transition-all ${
-                  formData.transaction_type === 'Expense'
-                    ? 'border-red-500 bg-red-50 text-red-700'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-                }`}
+                className={`flex items-center justify-center px-4 py-3 rounded-lg border-2 transition-all ${formData.transaction_type === 'Expense'
+                  ? 'border-red-500 bg-red-50 text-red-700'
+                  : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 <TrendingDown className="mr-2" />
                 Egreso
@@ -375,24 +406,24 @@ export function RecurringTransactionForm({
                 ${monthlyAmount.toFixed(2)} / mes
               </p>
               <p className="text-xs text-gray-600 mt-1">
-                {formData.frequency === 'monthly' ? '1x por mes' : 
-                 formData.frequency === 'biweekly' ? '2x por mes' : '4x por mes'}
+                {formData.frequency === 'monthly' ? '1x por mes' :
+                  formData.frequency === 'biweekly' ? '2x por mes' : '4x por mes'}
               </p>
             </div>
           )}
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-4">
-            <Button 
-              type="button" 
-              variant="secondary" 
+            <Button
+              type="button"
+              variant="secondary"
               onClick={onClose}
               disabled={loading}
             >
               Cancelar
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
             >
               {loading ? 'Guardando...' : (transaction ? 'Actualizar' : 'Crear')}
