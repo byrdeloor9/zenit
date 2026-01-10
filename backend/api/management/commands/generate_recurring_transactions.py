@@ -4,6 +4,7 @@ Run this command daily via cron/scheduler: python manage.py generate_recurring_t
 """
 from django.core.management.base import BaseCommand
 from api.models import RecurringTransaction
+from datetime import date
 
 
 class Command(BaseCommand):
@@ -67,6 +68,16 @@ class Command(BaseCommand):
                         )
                         generated_count += 1
                 else:
+                    # Provide feedback on WHY it was skipped
+                    today = date.today()
+                    last_gen = recurring_tx.last_generated_date
+                    self.stdout.write(
+                        self.style.WARNING(
+                            f"  [SKIP] {recurring_tx.name} ({recurring_tx.frequency}): "
+                            f"Day {recurring_tx.day_of_period} vs Today {today.day}. "
+                            f"Last Gen: {last_gen}"
+                        )
+                    )
                     skipped_count += 1
             except Exception as e:
                 self.stdout.write(
