@@ -5,6 +5,8 @@ from decimal import Decimal
 from datetime import date, timedelta
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from django.core.management import call_command
+from io import StringIO
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.db import transaction
@@ -302,6 +304,44 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
             'message': 'Transacción generada exitosamente'
         })
     
+    @action(detail=False, methods=['post'])
+    def generate_daily(self, request):
+        """
+        Trigger daily generation of all recurring transactions and insurance returns.
+        This endpoint is designed to be called by an external scheduler/worker.
+        """
+        # Security: You might want to restrict this to admins or specific service accounts
+        # if not request.user.is_staff: ...
+        
+        output = StringIO()
+        dry_run = request.data.get('dry_run', False)
+        
+        try:
+            # 1. Generate Recurring Transactions
+            call_command('generate_recurring_transactions', stdout=output, dry_run=dry_run)
+            
+            # 2. Generate Insurance Returns (Insurance returns usually don't have dry_run implemented yet, check before adding?)
+            # Assuming generate_insurance_returns might NOT have a dry_run argument, we should check or skip it if dry_run=True
+            if not dry_run:
+                try:
+                    call_command('generate_insurance_returns', stdout=output)
+                except Exception as e:
+                    output.write(f"Error generating insurance returns: {str(e)}\n")
+            else:
+                output.write("\n[DRY RUN] Skipping insurance returns generation (not supported in dry run)\n")
+            
+            return Response({
+                'status': 'success',
+                'message': 'Daily generation process completed' + (' (DRY RUN)' if dry_run else ''),
+                'log': output.getvalue()
+            })
+        except Exception as e:
+            return Response({
+                'status': 'error',
+                'message': str(e),
+                'log': output.getvalue()
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     @action(detail=False, methods=['get'])
     def projections(self, request):
         """Get financial projections for the next N months (income and expenses)"""
