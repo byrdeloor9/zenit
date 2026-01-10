@@ -268,8 +268,23 @@ class RecurringTransactionViewSet(viewsets.ModelViewSet[RecurringTransaction]):
         return RecurringTransaction.objects.filter(user=self.request.user).select_related('user', 'account', 'category')
     
     def perform_create(self, serializer):
-        """Automatically assign the authenticated user when creating a recurring transaction"""
-        serializer.save(user=self.request.user)
+        """Automatically assign the authenticated user and optionally generate first transaction"""
+        instance = serializer.save(user=self.request.user)
+        
+        # Check if immediate generation was requested
+        generate_now = self.request.data.get('generate_now')
+        
+        # Handle boolean or string 'true'
+        should_generate = generate_now is True or str(generate_now).lower() == 'true'
+        
+        if should_generate and instance.is_active:
+            # Check eligibility (must be today or past start_date)
+            # Actually if user explicitly asked, we should probably force it or check dates
+            today = date.today()
+            if instance.start_date <= today:
+                # Only generate if not already generated (it's new so likely None)
+                if not instance.last_generated_date:
+                    instance.generate_transaction()
     
     @action(detail=True, methods=['post'])
     def toggle_active(self, request, pk=None):

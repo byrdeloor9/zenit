@@ -17,6 +17,7 @@ export interface RecurringTransactionFormData {
   end_date: string | null
   is_active: boolean
   notes: string | null
+  generate_now?: boolean
 }
 
 export interface ProjectionsResponse {

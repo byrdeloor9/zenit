@@ -388,6 +388,24 @@ export function RecurringTransactionForm({
             setEnabled={setIsIndefinite}
           />
 
+          {/* Generate Now Toggle (Only for new transactions starting today/past) */}
+          {!transaction && formData.start_date && (() => {
+            const today = new Date()
+            const start = new Date(formData.start_date + 'T12:00:00')
+            today.setHours(0, 0, 0, 0)
+            start.setHours(0, 0, 0, 0)
+            return start <= today
+          })() && (
+              <div className="p-3 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/30 rounded-lg mt-4">
+                <Toggle
+                  label="Ejecutar transacción HOY"
+                  description="Crear automáticamente la primera transacción ahora mismo"
+                  enabled={formData.generate_now || false}
+                  setEnabled={(val) => setFormData(prev => ({ ...prev, generate_now: val }))}
+                />
+              </div>
+            )}
+
           {/* Notes */}
           <div>
             <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
