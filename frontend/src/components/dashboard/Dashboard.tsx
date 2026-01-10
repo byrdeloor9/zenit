@@ -1,14 +1,13 @@
-/**
- * Dashboard component - Main container redesigned with Tailwind CSS
- */
-
-import { Add as AddIcon, Assessment, Flag, AccountBalanceWallet } from '@mui/icons-material'
+import {
+  Notifications,
+  AccountBalanceWallet,
+  ReceiptLong
+} from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 import { StatsGrid } from './StatsGrid'
 import { TransactionList } from './TransactionList'
-import { BudgetWarnings } from './BudgetWarnings'
-import { MiniProjectionChart } from './MiniProjectionChart'
-import { Button } from '../ui/Button'
+import { BudgetProjectionWidget } from './BudgetProjectionWidget'
 import type { DashboardStats } from '../../types'
 
 interface DashboardProps {
@@ -17,77 +16,81 @@ interface DashboardProps {
 
 export function Dashboard({ stats }: DashboardProps): JSX.Element {
   const navigate = useNavigate()
+  const { user } = useAuth()
+
+  const today = new Date().toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  })
+
+  // Start with uppercase
+  // const formattedDate = today.charAt(0).toUpperCase() + today.slice(1)
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto">
+      {/* Header Section - Clean Style */}
+      <div className="flex items-center justify-between pt-2">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">Resumen de tu actividad financiera</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+            Welcome, {user?.first_name || 'User'}
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 text-base font-medium">
+            {today}
+          </p>
         </div>
 
-        {/* Right: Quick Actions + Nueva Transacción */}
-        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
-          <Button
-            variant="secondary"
-            onClick={() => navigate('/planning?tab=investments')}
-            size="sm"
-            className="w-full sm:w-auto border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200"
-          >
-            <Flag className="mr-1.5" fontSize="small" />
-            Nueva Meta
-          </Button>
+        {/* Right Actions: Icons & Avatar */}
+        <div className="flex items-center gap-4">
+          <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <ReceiptLong className="text-xl" />
+          </button>
 
-          <Button
-            variant="secondary"
-            onClick={() => navigate('/planning?tab=budgets')}
-            size="sm"
-            className="w-full sm:w-auto border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200"
-          >
-            <AccountBalanceWallet className="mr-1.5" fontSize="small" />
-            Nuevo Presupuesto
-          </Button>
+          <button className="relative p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <Notifications className="text-xl" />
+            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-gray-900"></span>
+          </button>
 
-          <Button
-            variant="secondary"
-            onClick={() => navigate('/analysis?tab=projections')}
-            size="sm"
-            className="w-full sm:w-auto border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-900/30 hover:border-cyan-300 dark:hover:border-cyan-700 transition-all duration-200"
-          >
-            <Assessment className="mr-1.5" fontSize="small" />
-            Ver Análisis
-          </Button>
-
-          <Button
-            onClick={() => navigate('/financial-management?tab=transactions')}
-            size="sm"
-            className="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 border-0"
-          >
-            <AddIcon className="mr-2" />
-            Nueva Transacción
-          </Button>
+          <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden border border-gray-200 dark:border-gray-600 ml-2">
+            {/* Fallback avatar if no image */}
+            <div className="w-full h-full flex items-center justify-center text-gray-500 font-semibold bg-gray-100 dark:bg-gray-800">
+              {user?.first_name?.charAt(0) || 'U'}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Grid - Row of 4 */}
       <StatsGrid stats={stats} />
 
-      {/* Main Content - 2 Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Main Content (2/3) */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Recent Transactions */}
-          <TransactionList transactions={stats.recent_transactions} />
+      {/* Main Content Split */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Left Column: Recent Transactions (7 columns) */}
+        <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                Transacciones Recientes
+              </h2>
+              <button
+                onClick={() => navigate('/financial-management?tab=transactions')}
+                className="text-sm text-indigo-600 dark:text-indigo-400 font-medium hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors"
+              >
+                Ver todas
+              </button>
+            </div>
+
+            <TransactionList transactions={stats.recent_transactions} wrapper={false} />
+          </div>
         </div>
 
-        {/* Right Column - Widgets (1/3) */}
-        <div className="space-y-6">
-          {/* Budget Warnings */}
-          <BudgetWarnings budgets={stats.critical_budgets} />
-
-          {/* Mini Projection Chart */}
-          <MiniProjectionChart data={stats.mini_projection} finalBalance={stats.projection_final_balance} />
+        {/* Right Column: Widgets (5 columns) */}
+        <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6 ">
+          {/* Combined Budget & Projection Widget */}
+          <BudgetProjectionWidget
+            budgets={stats.budget_status}
+            projectionData={stats.mini_projection}
+          />
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { Add } from '@mui/icons-material'
 import { TransactionSidebar } from './TransactionSidebar'
 import { TransactionTableView } from './TransactionTableView'
+import { TransactionTimeline } from './TransactionTimeline'
 import { TransactionForm } from './TransactionForm'
 import { QuickStats } from '../ui/QuickStats'
 import { Modal, Card, Button } from '../ui'
@@ -94,18 +95,27 @@ export function TransactionListSidebar() {
             })
     }, [filteredTransactions])
 
-    // Calcular estadísticas
+    // Calcular estadísticas del mes actual
     const stats = useMemo(() => {
-        const income = filteredTransactions
+        const now = new Date()
+        const currentMonth = now.getMonth()
+        const currentYear = now.getFullYear()
+
+        const currentMonthTransactions = filteredTransactions.filter(tx => {
+            const txDate = new Date(tx.transaction_date + 'T12:00:00')
+            return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear
+        })
+
+        const income = currentMonthTransactions
             .filter(tx => tx.type === 'Income')
             .reduce((sum, tx) => sum + parseFloat(tx.amount), 0)
 
-        const expenses = filteredTransactions
+        const expenses = currentMonthTransactions
             .filter(tx => tx.type === 'Expense')
             .reduce((sum, tx) => sum + parseFloat(tx.amount), 0)
 
         return {
-            total: filteredTransactions.length,
+            total: currentMonthTransactions.length,
             income,
             expenses,
         }
@@ -157,22 +167,28 @@ export function TransactionListSidebar() {
         <div className="flex flex-col h-full">
             {/* Header Fixed */}
             <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
-                <div className="flex items-center justify-between gap-4 flex-wrap">
-                    <QuickStats
-                        items={[
-                            { label: 'Total', value: stats.total, icon: '📊' },
-                            { label: 'Ingresos', value: `+${formatCurrency(stats.income.toString())}`, color: 'green', icon: '↗️' },
-                            { label: 'Gastos', value: `−${formatCurrency(stats.expenses.toString())}`, color: 'red', icon: '↘️' },
-                        ]}
-                    />
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+                    <div className="w-full lg:w-auto">
+                        <span className="block text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 lg:mb-0 lg:mr-4 lg:inline-block">
+                            Estadísticas Mensuales
+                        </span>
+                        <div className="inline-block w-full lg:w-auto">
+                            <QuickStats
+                                items={[
+                                    { label: 'Total', value: stats.total, icon: '📊' },
+                                    { label: 'Ingresos', value: `+${formatCurrency(stats.income.toString())}`, color: 'green', icon: '↗️' },
+                                    { label: 'Gastos', value: `−${formatCurrency(stats.expenses.toString())}`, color: 'red', icon: '↘️' },
+                                ]}
+                            />
+                        </div>
+                    </div>
 
                     <button
                         onClick={() => handleOpenForm()}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+                        className="hidden lg:flex px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg items-center gap-2 transition-colors shadow-sm"
                     >
                         <Add className="w-5 h-5" />
-                        <span className="hidden sm:inline">Nueva Transacción</span>
-                        <span className="sm:hidden">Nueva</span>
+                        <span>Nueva Transacción</span>
                     </button>
                 </div>
             </header>
@@ -224,12 +240,26 @@ export function TransactionListSidebar() {
                             )}
                         </div>
                     ) : (
-                        <TransactionTableView
-                            groups={groupedTransactions}
-                            compact={!sidebarOpen}
-                            onEdit={handleOpenForm}
-                            onDelete={handleDeleteClick}
-                        />
+                        <>
+                            {/* Mobile View: Timeline */}
+                            <div className="lg:hidden">
+                                <TransactionTimeline
+                                    transactions={filteredTransactions}
+                                    onEdit={handleOpenForm}
+                                    onDelete={handleDeleteClick}
+                                />
+                            </div>
+
+                            {/* Desktop View: Table */}
+                            <div className="hidden lg:block">
+                                <TransactionTableView
+                                    groups={groupedTransactions}
+                                    compact={!sidebarOpen}
+                                    onEdit={handleOpenForm}
+                                    onDelete={handleDeleteClick}
+                                />
+                            </div>
+                        </>
                     )}
                 </main>
             </div>
@@ -267,7 +297,7 @@ export function TransactionListSidebar() {
             {/* FAB Flotante para móvil */}
             <button
                 onClick={() => handleOpenForm()}
-                className="lg:hidden fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
+                className={`lg:hidden fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50 ${formOpen ? 'hidden' : ''}`}
                 title="Nueva Transacción"
             >
                 <Add />

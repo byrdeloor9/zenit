@@ -82,13 +82,17 @@ class DashboardService:
         }
     
     @staticmethod
-    def get_critical_budgets(user_id: Optional[int] = None) -> List[Dict[str, Any]]:
-        """Get budgets that are critical (>80% used)"""
+    def get_budget_status(user_id: Optional[int] = None) -> List[Dict[str, Any]]:
+        """Get status of all active budgets"""
         queryset = Budget.objects.select_related('category').filter(status='Active')
         if user_id:
             queryset = queryset.filter(user_id=user_id)
         
-        critical = []
+        # Debug logging
+        print(f"[DEBUG] get_budget_status - user_id: {user_id}")
+        print(f"[DEBUG] get_budget_status - queryset count: {queryset.count()}")
+        
+        budgets_data = []
         for budget in queryset:
             # Calculate spent (same logic as BudgetSerializer)
             filters = {
@@ -105,16 +109,21 @@ class DashboardService:
             amount = float(budget.amount)
             percentage = (spent / amount * 100) if amount > 0 else 0
             
-            if percentage >= 80:
-                critical.append({
-                    'id': budget.id,
-                    'category_name': budget.category.name if budget.category else 'Sin categoría',
-                    'amount': str(budget.amount),
-                    'spent': str(spent),
-                    'percentage': round(percentage, 1),
-                })
+            # Append all active budgets, regardless of percentage
+            budgets_data.append({
+                'id': budget.id,
+                'category_name': budget.category.name if budget.category else 'Sin categoría',
+                'amount': str(budget.amount),
+                'spent': str(spent),
+                'percentage': round(percentage, 1),
+            })
         
-        return sorted(critical, key=lambda x: x['percentage'], reverse=True)[:5]
+        # Debug logging
+        print(f"[DEBUG] get_budget_status - budgets_data count: {len(budgets_data)}")
+        print(f"[DEBUG] get_budget_status - budgets_data: {budgets_data}")
+        
+        # Return top 5 by percentage usage
+        return sorted(budgets_data, key=lambda x: x['percentage'], reverse=True)[:5]
     
     @staticmethod
     def get_top_goals(user_id: Optional[int] = None) -> List[Dict[str, Any]]:
@@ -251,7 +260,7 @@ class DashboardService:
             'accounts_count': cls.get_accounts_count(user_id),
             'recent_transactions': cls.get_recent_transactions(10, user_id),
             'goals_summary': cls.get_goals_summary(user_id),
-            'critical_budgets': cls.get_critical_budgets(user_id),
+            'budget_status': cls.get_budget_status(user_id),
             'top_goals': cls.get_top_goals(user_id),
             'upcoming_payments': cls.get_upcoming_payments(user_id),
             'mini_projection': mini_projection['data'],

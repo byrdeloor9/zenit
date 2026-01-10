@@ -5,23 +5,18 @@
 import { useEffect, useState } from 'react'
 import {
   Add as AddIcon,
-  TrendingUp,
-  TrendingDown,
-  MoreVert,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@mui/icons-material'
 import { useTransactions, useAccounts, useCategories } from '../../hooks'
 import { TransactionForm } from './TransactionForm'
+import { TransactionTimeline } from './TransactionTimeline'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
 import { Select } from '../ui/Select'
 import { Alert } from '../ui/Alert'
 import { Card } from '../ui/Card'
-import { Badge } from '../ui/Badge'
 import { ContextMenu, ContextMenuItem } from '../ui/ContextMenu'
-import { formatCurrency, formatDate } from '../../utils/formatters'
+import { formatCurrency } from '../../utils/formatters'
 import type { Transaction } from '../../types'
 import type { TransactionFormData } from '../../api/endpoints/transactions'
 
@@ -36,14 +31,14 @@ export function TransactionList(): JSX.Element {
     removeTransaction,
   } = useTransactions()
 
-  const { 
-    accounts: accountsList, 
-    fetchAccounts 
+  const {
+    accounts: accountsList,
+    fetchAccounts
   } = useAccounts()
-  
-  const { 
-    categories, 
-    fetchCategories 
+
+  const {
+    categories,
+    fetchCategories
   } = useCategories()
 
   const [formOpen, setFormOpen] = useState(false)
@@ -57,12 +52,6 @@ export function TransactionList(): JSX.Element {
   const [accountFilter, setAccountFilter] = useState<string>('all')
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [sortBy, setSortBy] = useState<string>('date-desc')
-
-  // Menu contextual
-  const [menuAnchor, setMenuAnchor] = useState<{
-    anchorEl: HTMLElement | null
-    transaction: Transaction | null
-  }>({ anchorEl: null, transaction: null })
 
   useEffect(() => {
     fetchTransactions()
@@ -108,37 +97,13 @@ export function TransactionList(): JSX.Element {
     setTransactionToDelete(null)
   }
 
-  // Menu contextual handlers
-  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, tx: Transaction): void => {
-    event.stopPropagation()
-    setMenuAnchor({ anchorEl: event.currentTarget, transaction: tx })
-  }
-
-  const handleMenuClose = (): void => {
-    setMenuAnchor({ anchorEl: null, transaction: null })
-  }
-
-  const handleMenuEdit = (): void => {
-    if (menuAnchor.transaction) {
-      handleOpenForm(menuAnchor.transaction)
-    }
-    handleMenuClose()
-  }
-
-  const handleMenuDelete = (): void => {
-    if (menuAnchor.transaction) {
-      handleDeleteClick(menuAnchor.transaction.id)
-    }
-    handleMenuClose()
-  }
-
   // Apply filters and search
   let filteredTransactions = transactions.filter(tx => {
     if (typeFilter !== 'all' && tx.type !== typeFilter) return false
     if (categoryFilter !== 'all' && tx.category_id?.toString() !== categoryFilter) return false
     if (accountFilter !== 'all' && tx.account_id.toString() !== accountFilter) return false
     if (searchQuery && !tx.description?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !tx.category_name.toLowerCase().includes(searchQuery.toLowerCase())) return false
+      !tx.category_name.toLowerCase().includes(searchQuery.toLowerCase())) return false
     return true
   })
 
@@ -162,7 +127,7 @@ export function TransactionList(): JSX.Element {
   const totalIncome = transactions
     .filter(tx => tx.type === 'Income')
     .reduce((sum, tx) => sum + parseFloat(tx.amount), 0)
-  
+
   const totalExpenses = transactions
     .filter(tx => tx.type === 'Expense')
     .reduce((sum, tx) => sum + parseFloat(tx.amount), 0)
@@ -195,67 +160,67 @@ export function TransactionList(): JSX.Element {
               <p className="text-3xl font-bold text-red-600 dark:text-red-400">{formatCurrency(totalExpenses.toString())}</p>
             </div>
           </div>
-          
+
           {/* Filters - Debajo de stats */}
           <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
             <div className="flex flex-wrap gap-3">
-            <div className="relative">
-              <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="🔍 Buscar..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-3 py-2 w-full border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-            <Select
-              id="typeFilter"
-              label=""
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-            >
-              <option value="all">Todas</option>
-              <option value="Income">Ingresos</option>
-              <option value="Expense">Gastos</option>
-            </Select>
-            <Select
-              id="categoryFilter"
-              label=""
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
-              <option value="all">Categorías</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id.toString()}>
-                  {category.icon && `${category.icon} `}{category.name}
-                </option>
-              ))}
-            </Select>
-            <Select
-              id="accountFilter"
-              label=""
-              value={accountFilter}
-              onChange={(e) => setAccountFilter(e.target.value)}
-            >
-              <option value="all">Cuentas</option>
-              {accountsList.map((account) => (
-                <option key={account.id} value={account.id.toString()}>
-                  {account.name}
-                </option>
-              ))}
-            </Select>
-            <Select
-              id="sortBy"
-              label=""
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="date-desc">Recientes</option>
-              <option value="date-asc">Antiguas</option>
-              <option value="amount-desc">Mayor $</option>
-              <option value="amount-asc">Menor $</option>
-            </Select>
+              <div className="relative">
+                <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="🔍 Buscar..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-3 py-2 w-full border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <Select
+                id="typeFilter"
+                label=""
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+              >
+                <option value="all">Todas</option>
+                <option value="Income">Ingresos</option>
+                <option value="Expense">Gastos</option>
+              </Select>
+              <Select
+                id="categoryFilter"
+                label=""
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
+                <option value="all">Categorías</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id.toString()}>
+                    {category.icon && `${category.icon} `}{category.name}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                id="accountFilter"
+                label=""
+                value={accountFilter}
+                onChange={(e) => setAccountFilter(e.target.value)}
+              >
+                <option value="all">Cuentas</option>
+                {accountsList.map((account) => (
+                  <option key={account.id} value={account.id.toString()}>
+                    {account.name}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                id="sortBy"
+                label=""
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+              >
+                <option value="date-desc">Recientes</option>
+                <option value="date-asc">Antiguas</option>
+                <option value="amount-desc">Mayor $</option>
+                <option value="amount-asc">Menor $</option>
+              </Select>
             </div>
           </div>
         </div>
@@ -266,12 +231,13 @@ export function TransactionList(): JSX.Element {
         <Alert type="error" message={error} />
       )}
 
-      {/* Transactions List */}
+      {/* Transactions List (Timeline View) */}
       {filteredTransactions.length === 0 ? (
         <Card className="text-center py-12">
+          {/* ... empty state (kept same as before) ... */}
           <div className="text-6xl mb-4">📊</div>
           <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">
-            {transactions.length === 0 
+            {transactions.length === 0
               ? 'No tienes transacciones aún'
               : 'No se encontraron transacciones'}
           </h3>
@@ -292,90 +258,11 @@ export function TransactionList(): JSX.Element {
           )}
         </Card>
       ) : (
-        <div className="space-y-2">
-          {filteredTransactions.map((transaction) => (
-            <div
-              key={transaction.id}
-              className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 border-l-4 hover:shadow-md transition-shadow duration-200 ${
-                transaction.type === 'Income'
-                  ? 'border-l-green-500'
-                  : 'border-l-red-500'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                {/* Icono de tipo */}
-                <div
-                  className={`p-2 rounded-xl flex items-center justify-center ${
-                    transaction.type === 'Income'
-                      ? 'bg-green-100 dark:bg-green-900/20 text-green-600'
-                      : 'bg-red-100 dark:bg-red-900/20 text-red-600'
-                  }`}
-                >
-                  {transaction.type === 'Income' ? (
-                    <TrendingUp className="w-5 h-5" />
-                  ) : (
-                    <TrendingDown className="w-5 h-5" />
-                  )}
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 min-w-0">
-                  {/* Description and Amount - Stack on mobile */}
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-1 gap-0.5">
-                    <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                      {transaction.description || 'Sin descripción'}
-                    </h3>
-                    <span
-                      className={`text-base font-bold flex-shrink-0 ${
-                        transaction.type === 'Income'
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      }`}
-                    >
-                      {transaction.type === 'Income' ? '+' : '−'}
-                      {formatCurrency(transaction.amount)}
-                    </span>
-                  </div>
-                  
-                  {/* Account, Category and Date as Badges */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge variant="primary" size="sm">
-                      {transaction.account_name}
-                    </Badge>
-                    <Badge 
-                      variant={transaction.type === 'Income' ? 'success' : 'error'}
-                      size="sm"
-                    >
-                      {transaction.category_name || 'Sin categoría'}
-                    </Badge>
-                    <Badge variant="info" size="sm">
-                      {formatDate(transaction.transaction_date)}
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Menú contextual */}
-                <button
-                  onClick={(e) => handleMenuClick(e, transaction)}
-                  className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <MoreVert className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+        <TransactionTimeline
+          transactions={filteredTransactions}
+          onEdit={handleOpenForm}
+        />
       )}
-
-      {/* Menu Contextual */}
-      <ContextMenu anchorEl={menuAnchor.anchorEl} onClose={handleMenuClose}>
-        <ContextMenuItem onClick={handleMenuEdit} icon={<EditIcon fontSize="small" />}>
-          Editar
-        </ContextMenuItem>
-        <ContextMenuItem onClick={handleMenuDelete} variant="danger" icon={<DeleteIcon fontSize="small" />}>
-          Eliminar
-        </ContextMenuItem>
-      </ContextMenu>
 
       {/* Transaction Form Dialog */}
       <TransactionForm
@@ -386,6 +273,7 @@ export function TransactionList(): JSX.Element {
         loading={loading}
         accounts={accountsList}
         categories={categories}
+        onDelete={handleDeleteClick}
       />
 
       {/* FAB Flotante */}

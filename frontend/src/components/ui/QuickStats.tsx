@@ -17,22 +17,15 @@ interface QuickStatsProps {
 
 export function QuickStats({ items, className = '' }: QuickStatsProps) {
     return (
-        <div className={`flex gap-6 md:gap-8 ${className}`}>
+        <div className={`grid grid-cols-3 gap-2 md:flex md:gap-4 ${className}`}>
             {items.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                    {item.icon && (
-                        <span className="text-2xl" aria-hidden="true">
-                            {item.icon}
-                        </span>
-                    )}
-                    <div className="flex flex-col">
-                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                            {item.label}
-                        </span>
-                        <span className={`text-xl md:text-2xl font-bold ${getColorClass(item.color)}`}>
-                            {item.value}
-                        </span>
-                    </div>
+                <div key={idx} className="flex flex-col items-center md:items-start p-2 md:px-4 md:py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-100 dark:border-gray-700 min-w-[100px] md:min-w-[120px]">
+                    <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
+                        {item.label}
+                    </span>
+                    <span className={`text-sm sm:text-base md:text-xl font-bold truncate w-full text-center md:text-left ${getColorClass(item.color)}`}>
+                        {item.value}
+                    </span>
                 </div>
             ))}
         </div>

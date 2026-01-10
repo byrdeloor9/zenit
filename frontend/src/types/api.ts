@@ -40,7 +40,7 @@ export interface DashboardStats {
   accounts_count: number
   recent_transactions: Transaction[]
   goals_summary: GoalsSummary
-  critical_budgets: DashboardBudget[]
+  budget_status: DashboardBudget[]
   top_goals: DashboardGoal[]
   upcoming_payments: DashboardPayment[]
   mini_projection: DashboardProjectionPoint[]

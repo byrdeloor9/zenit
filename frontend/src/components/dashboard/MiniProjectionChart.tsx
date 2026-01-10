@@ -22,77 +22,65 @@ export function MiniProjectionChart({
   data = [],
   finalBalance = 0,
 }: MiniProjectionChartProps): JSX.Element {
-  if (data.length === 0) {
-    return (
-      <Card>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center">
-            <ShowChart className="text-cyan-600 dark:text-cyan-400 text-lg" />
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Proyección 3M</h3>
-        </div>
-        <div className="text-center py-8 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
-          <div className="text-cyan-400 text-4xl mb-3">📊</div>
-          <p className="text-cyan-700 dark:text-cyan-400 font-medium">Sin datos de proyección</p>
-          <p className="text-cyan-600 dark:text-cyan-500 text-sm mt-1">Agrega más transacciones para ver proyecciones</p>
-        </div>
-      </Card>
-    )
-  }
-
   const isPositive = finalBalance >= 0
   const trendIcon = isPositive ? TrendingUp : TrendingDown
-  const trendColor = isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-  const bgColor = isPositive ? 'bg-green-50 dark:bg-green-900/20' : 'bg-red-50 dark:bg-red-900/20'
-  const borderColor = isPositive ? 'border-green-200 dark:border-green-800' : 'border-red-200 dark:border-red-800'
+  const trendColor = isPositive ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+  const bgColor = isPositive ? 'bg-emerald-50 dark:bg-emerald-900/20' : 'bg-rose-50 dark:bg-rose-900/20'
+  // const borderColor = isPositive ? 'border-emerald-200 dark:border-emerald-800' : 'border-rose-200 dark:border-rose-800'
+
+  // Mock data to ensure chart renders if empty (or handle empty state gracefully)
+  const chartData = data.length > 0 ? data : [
+    { month: 'Jan', balance: 0 },
+    { month: 'Feb', balance: 0 },
+    { month: 'Mar', balance: 0 },
+  ]
 
   return (
-    <Card>
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-8 h-8 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center">
-          <ShowChart className="text-cyan-600 dark:text-cyan-400 text-lg" />
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 p-6 h-full flex flex-col">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-900/30 rounded-xl flex items-center justify-center">
+          <ShowChart className="text-cyan-600 dark:text-cyan-400" />
         </div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Proyección 3M</h3>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white">Proyección 3M</h3>
       </div>
 
       {/* Chart */}
-      <div className="h-32 mb-4">
+      <div className="flex-1 min-h-[160px] mb-4 -mx-2">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <Line
-              type="monotone"
-              dataKey="balance"
-              stroke={isPositive ? '#10B981' : '#F43F5E'}
-              strokeWidth={2}
-              dot={{ fill: isPositive ? '#10B981' : '#F43F5E', strokeWidth: 2, r: 3 }}
-              activeDot={{ r: 5, stroke: isPositive ? '#10B981' : '#F43F5E', strokeWidth: 2 }}
-            />
+          <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
             <Tooltip
               formatter={(value: number) => [formatCurrency(value.toString()), 'Balance']}
               labelFormatter={(label) => `Mes: ${label}`}
               contentStyle={{
-                backgroundColor: 'white',
-                border: '1px solid #e5e7eb',
-                borderRadius: '8px',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                border: 'none',
+                borderRadius: '12px',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                padding: '12px'
               }}
+            />
+            <Line
+              type="monotone"
+              dataKey="balance"
+              stroke="#10B981"
+              strokeWidth={3}
+              dot={{ fill: '#10B981', strokeWidth: 0, r: 4 }}
+              activeDot={{ r: 6, stroke: '#10B981', strokeWidth: 3, fill: '#fff' }}
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Summary */}
-      <div className={`p-3 rounded-lg border ${bgColor} ${borderColor}`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {React.createElement(trendIcon, { className: `text-sm ${trendColor}` })}
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Balance proyectado</span>
-          </div>
-          <span className={`font-bold ${trendColor}`}>
-            {formatCurrency(finalBalance.toString())}
-          </span>
+      {/* Summary Box */}
+      <div className={`p-4 rounded-xl ${bgColor} flex items-center justify-between`}>
+        <div className="flex items-center gap-2">
+          {React.createElement(trendIcon, { className: `text-lg ${trendColor}` })}
+          <span className="font-semibold text-gray-700 dark:text-gray-200 text-sm">Balance proyectado</span>
         </div>
+        <span className={`font-bold text-lg ${trendColor}`}>
+          {formatCurrency(finalBalance.toString())}
+        </span>
       </div>
-    </Card>
+    </div>
   )
 }

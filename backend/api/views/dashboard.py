@@ -34,7 +34,7 @@ def dashboard_stats(request) -> Response:
         'accounts_count': stats_data['accounts_count'],
         'recent_transactions': recent_transactions_data,
         'goals_summary': stats_data['goals_summary'],
-        'critical_budgets': stats_data['critical_budgets'],
+        'budget_status': stats_data['budget_status'],
         'top_goals': stats_data['top_goals'],
         'upcoming_payments': stats_data['upcoming_payments'],
         'mini_projection': stats_data['mini_projection'],
