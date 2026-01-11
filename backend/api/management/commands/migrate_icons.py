@@ -8,7 +8,6 @@ class Command(BaseCommand):
         # Mapping of Emoji (or old name) -> New MUI Icon Name
         # Based on standard default categories
         EMOJI_TO_MUI = {
-        EMOJI_TO_MUI = {
             # --- Food & Drink ---
             '☕': 'LocalCafe', '🍵': 'LocalCafe', '🥤': 'LocalCafe',
             '🍔': 'Fastfood', '🍟': 'Fastfood', '🌭': 'Fastfood', '🥪': 'Fastfood', '🌮': 'Fastfood', '🌯': 'Fastfood',
