@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import { Add as AddIcon } from '@mui/icons-material'
 import { useCategories } from '../../hooks'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 import { CategoryCard } from './CategoryCard'
 import { CategoryForm } from './CategoryForm'
 import { Modal } from '../ui/Modal'

@@ -5,6 +5,7 @@
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { Add as AddIcon } from '@mui/icons-material'
 import { useAccounts } from '../../hooks'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 import { AccountCard } from './AccountCard'
 import { AccountForm } from './AccountForm'
 import { AccountHistory } from './AccountHistory'

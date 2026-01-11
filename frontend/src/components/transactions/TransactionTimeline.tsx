@@ -103,8 +103,7 @@ export function TransactionTimeline({ transactions, onEdit, onDelete }: Transact
                                         onClick={() => handleRowClick(tx.id)}
                                         className={`flex items-center p-3 transition-colors cursor-pointer ${isActive ? 'bg-indigo-50/50 dark:bg-indigo-900/10' : 'hover:bg-gray-50 dark:hover:bg-gray-750'}`}
                                     >
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 mr-3 transition-transform duration-300 ${isActive ? 'scale-110 shadow-sm' : ''} ${tx.type === 'Income' ? 'bg-green-50 dark:bg-green-900/10 text-green-600' : 'bg-red-50 dark:bg-red-900/10 text-red-600'
-                                            }`}>
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 mr-3 transition-transform duration-300 ${isActive ? 'scale-110 shadow-sm' : ''} bg-[#363C97]/10 dark:bg-[#363C97]/20 text-[#363C97] dark:text-[#8ea5ff]`}>
                                             {tx.category_icon ? (
                                                 <CategoryIcon iconName={tx.category_icon} className="text-xl" />
                                             ) : (

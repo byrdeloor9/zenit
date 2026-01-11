@@ -123,10 +123,7 @@ function TransactionTableRow({ transaction: tx, compact, onEdit, onDelete }: Tra
             {/* Descripción + Icono */}
             <td className="px-4 py-3">
                 <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${tx.type === 'Income'
-                        ? 'bg-green-100 dark:bg-green-900/20'
-                        : 'bg-red-100 dark:bg-red-900/20'
-                        }`}>
+                    <div className="w-10 h-10 rounded-lg flex items-center justify-center text-xl bg-[#363C97]/10 dark:bg-[#363C97]/20 text-[#363C97] dark:text-[#8ea5ff]">
                         {tx.category_icon ? (
                             <CategoryIcon iconName={tx.category_icon} className="text-2xl" />
                         ) : (
