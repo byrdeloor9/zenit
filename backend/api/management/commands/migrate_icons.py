@@ -8,57 +8,90 @@ class Command(BaseCommand):
         # Mapping of Emoji (or old name) -> New MUI Icon Name
         # Based on standard default categories
         EMOJI_TO_MUI = {
-            # Food & Drink
-            '☕': 'LocalCafe',
-            '🍔': 'Fastfood',
+        EMOJI_TO_MUI = {
+            # --- Food & Drink ---
+            '☕': 'LocalCafe', '🍵': 'LocalCafe', '🥤': 'LocalCafe',
+            '🍔': 'Fastfood', '🍟': 'Fastfood', '🌭': 'Fastfood', '🥪': 'Fastfood', '🌮': 'Fastfood', '🌯': 'Fastfood',
             '🍕': 'LocalPizza',
-            '🍻': 'LocalBar',
-            '🍽️': 'Restaurant',
+            '🍻': 'LocalBar', '🍺': 'LocalBar', '🍷': 'Liquor', '🍸': 'Liquor', '🍹': 'Liquor', '🍾': 'Liquor',
+            '🍽️': 'Restaurant', '🍴': 'Restaurant', '🥄': 'Restaurant',
             '🛒': 'ShoppingCart',
-            
-            # Shopping
-            '🛍️': 'ShoppingBag',
-            '👗': 'Checkroom',
-            '💊': 'LocalPharmacy',
-            
-            # Transport
-            '🚗': 'DirectionsCar',
-            '🚌': 'DirectionsBus',
-            '✈️': 'Flight',
-            '🚕': 'LocalTaxi',
+            '🍝': 'LocalPizza', '🍜': 'Kitchen', '🍲': 'Kitchen', '🥘': 'Kitchen',
+            '🥐': 'BakeryDining', '🥨': 'BakeryDining', '🥯': 'BakeryDining', '🥞': 'BakeryDining',
+            '🍦': 'Icecream', '🍧': 'Icecream', '🍨': 'Icecream', '🍩': 'Icecream', '🍪': 'Icecream', '🍰': 'Icecream', '🎂': 'Icecream',
+            '🍱': 'SetMeal', '🥗': 'SetMeal',
+            '🍳': 'BreakfastDining', '🍞': 'BreakfastDining', '🥓': 'BreakfastDining', '🥣': 'BreakfastDining',
+
+            # --- Shopping ---
+            '🛍️': 'ShoppingBag', '🎁': 'ShoppingBag',
+            '👗': 'Checkroom', '👔': 'Checkroom', '👕': 'Checkroom', '👖': 'Checkroom', '👘': 'Checkroom', '👚': 'Checkroom', '👞': 'Checkroom', '👟': 'Checkroom', '👠': 'Checkroom', '👢': 'Checkroom',
+            '💊': 'LocalPharmacy', '🩺': 'MedicalServices',
+            '🏷️': 'LocalOffer', '🎫': 'LocalOffer',
+            '🧾': 'Receipt',
+
+            # --- Transport ---
+            '🚗': 'DirectionsCar', '🚘': 'DirectionsCar', '🚙': 'DirectionsCar',
+            '🚌': 'DirectionsBus', '🚍': 'DirectionsBus',
+            '✈️': 'Flight', '🛫': 'Flight', '🛬': 'Flight',
+            '🚕': 'LocalTaxi', '🚖': 'LocalTaxi',
             '⛽': 'LocalGasStation',
-            
-            # Home & Utilities
-            '🏠': 'Home',
-            '💡': 'Lightbulb',
-            '💧': 'WaterDrop',
+            '🚤': 'DirectionsBoat', '🛳️': 'DirectionsBoat', '⛴️': 'DirectionsBoat', '⛵': 'DirectionsBoat',
+            '🏍️': 'TwoWheeler', '🛵': 'TwoWheeler',
+            '🚇': 'DirectionsSubway', '🚆': 'Train', '🚄': 'Train', '🚂': 'Train', '🚋': 'DirectionsSubway',
+            '🚲': 'TwoWheeler',
+
+            # --- Home & Utilities ---
+            '🏠': 'Home', '🏡': 'Home', '🏘️': 'Home',
+            '💡': 'Lightbulb', '🔦': 'Lightbulb',
+            '💧': 'WaterDrop', '🚿': 'WaterDrop', '🛁': 'WaterDrop',
             '⚡': 'Bolt',
-            '🌐': 'Router',
-            '🔧': 'Build',
-            
-            # Entertainment
-            '🎬': 'Movie',
-            '🎮': 'SportsEsports',
-            '⚽': 'SportsSoccer',
-            '🏋️': 'FitnessCenter',
-            
-            # Health
-            '🏥': 'LocalHospital',
-            '🧘': 'SelfImprovement',
-            
-            # Work & Education
-            '💼': 'Work',
-            '🎓': 'School',
-            '💰': 'AttachMoney',
-            
-            # Tech
-            '📱': 'PhoneIphone',
-            '💻': 'Laptop',
-            
-            # Others / Defaults (Add more if you know specific user emojis)
-            '🐾': 'Pets',
-            '🌲': 'Park',
-            '⚙️': 'Settings',
+            '🌐': 'Router', '📶': 'Router', '📡': 'Router',
+            '🔧': 'Build', '🔨': 'Build', '🛠️': 'Build', '🪛': 'Build',
+            '🏢': 'Apartment',
+            '🛋️': 'Weekend', '🛏️': 'Weekend', '🚪': 'MeetingRoom',
+            '❄️': 'Hvac', '🌡️': 'Hvac',
+            '🧹': 'CleaningServices', '🧽': 'CleaningServices', '🧼': 'CleaningServices',
+            '🏗️': 'Construction', '🧱': 'Construction',
+            '🧺': 'LocalLaundryService',
+            '📺': 'SmartScreen',
+
+            # --- Entertainment ---
+            '🎬': 'Movie', '🎥': 'Movie', '🎟️': 'Movie', '🍿': 'Movie',
+            '🎮': 'SportsEsports', '🕹️': 'SportsEsports', '👾': 'SportsEsports',
+            '⚽': 'SportsSoccer', '🏀': 'SportsSoccer', '🏈': 'SportsSoccer', '⚾': 'SportsSoccer',
+            '🏋️': 'FitnessCenter', '💪': 'FitnessCenter', '🤸': 'FitnessCenter',
+            '🏊': 'Pool',
+            '⛳': 'GolfCourse',
+            '🎾': 'SportsTennis', '🏸': 'SportsTennis', '🏓': 'SportsTennis',
+            '🎵': 'QueueMusic', '🎶': 'QueueMusic', '🎧': 'QueueMusic', '🎼': 'QueueMusic', '🎹': 'QueueMusic', '🎸': 'QueueMusic',
+            '🃏': 'Casino', '🎲': 'Casino', '🎰': 'Casino',
+            '🎭': 'Theaters',
+            '🌲': 'Park', '🌳': 'Park', '🌴': 'Park', '🌵': 'Park',
+
+            # --- Health ---
+            '🏥': 'LocalHospital', '🚑': 'LocalHospital',
+            '🧘': 'SelfImprovement', '💆': 'Spa', '💇': 'ContentCut', '💅': 'Spa',
+            '🩹': 'Healing',
+
+            # --- Work & Education ---
+            '💼': 'Work', '👔': 'Work',
+            '🎓': 'School', '🏫': 'School', '📚': 'School', '📖': 'MenuBook',
+            '💰': 'AttachMoney', '💵': 'AttachMoney', '💸': 'AttachMoney', '💳': 'CreditCard', '💴': 'AttachMoney', '💶': 'AttachMoney', '💷': 'AttachMoney',
+            '📊': 'BusinessCenter', '📉': 'BusinessCenter', '📈': 'BusinessCenter',
+            '🧮': 'Calculate',
+            '🗣️': 'Language',
+            '🔬': 'Science', '🧪': 'Science',
+
+            # --- Tech ---
+            '📱': 'PhoneIphone', '📲': 'PhoneIphone',
+            '💻': 'Laptop', '🖥️': 'Laptop', '⌨️': 'Laptop', '🖱️': 'Laptop',
+            '📷': 'CameraAlt', '📸': 'CameraAlt',
+            '☁️': 'Cloud',
+            '🔒': 'Lock', '🔐': 'Lock', '🔑': 'VpnKey', '🛡️': 'Security',
+
+            # --- Others / Defaults ---
+            '🐾': 'Pets', '🐕': 'Pets', '🐈': 'Pets',
+            '⚙️': 'Settings', '🔧': 'Settings',
         }
 
         updated_count = 0
@@ -67,7 +100,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Scanning {categories.count()} categories...")
 
         for category in categories:
-            current_icon = category.icon
+            current_icon = category.icon.strip() if category.icon else '' # Strip whitespace
             
             # 1. Direct Emoji Match
             if current_icon in EMOJI_TO_MUI:

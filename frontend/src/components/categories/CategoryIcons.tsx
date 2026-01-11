@@ -87,12 +87,20 @@ interface CategoryIconProps {
 export function CategoryIcon({ iconName, className = '' }: CategoryIconProps) {
     if (!iconName) return null;
 
+    // Normalize: trim strings
+    const normalizedIconName = iconName.trim();
+
     // Check if it's an emoji (basic check: not in our map and "short")
     // Or if it IS in our map, render the component.
-    const IconComponent = iconMap[iconName];
+    const IconComponent = iconMap[normalizedIconName];
 
     if (IconComponent) {
         return <IconComponent className={className} />;
+    }
+
+    // DEBUG: Only log if it looks like an MUI name (starts with Uppercase) but wasn't found
+    if (/^[A-Z]/.test(normalizedIconName) && normalizedIconName.length > 2) {
+        console.warn(`CategoryIcon: Icon "${normalizedIconName}" not found in map.`);
     }
 
     // Fallback: render as text (for emoji support)
