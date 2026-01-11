@@ -7,9 +7,12 @@ import { useState } from 'react'
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  MoreVert as MoreVertIcon
+  MoreVert as MoreVertIcon,
+  TrendingUp,
+  TrendingDown
 } from '@mui/icons-material'
 import { ContextMenu, ContextMenuItem } from '../ui/ContextMenu'
+import { CategoryIcon } from './CategoryIcons'
 import type { Category } from '../../types'
 
 interface CategoryCardProps {
@@ -84,7 +87,11 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps):
           absolute right-3 bottom-[-6px] text-6xl transform group-hover:scale-110 transition-all duration-300 origin-bottom-right
           ${iconColor} opacity-90 group-hover:opacity-100 group-hover:grayscale-0
         `}>
-          {category.icon || (isIncome ? '💰' : '💸')}
+          {category.icon ? (
+            <CategoryIcon iconName={category.icon} className="text-6xl" />
+          ) : (
+            <span>{isIncome ? <TrendingUp className="text-6xl" /> : <TrendingDown className="text-6xl" />}</span>
+          )}
         </div>
       </div>
 
