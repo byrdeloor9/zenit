@@ -19,6 +19,7 @@ import { ContextMenu, ContextMenuItem } from '../ui/ContextMenu'
 import { formatCurrency } from '../../utils/formatters'
 import type { Transaction } from '../../types'
 import type { TransactionFormData } from '../../api/endpoints/transactions'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 
 export function TransactionList(): JSX.Element {
   const {
@@ -276,15 +277,8 @@ export function TransactionList(): JSX.Element {
         onDelete={handleDeleteClick}
       />
 
-      {/* FAB Flotante */}
       {/* FAB Button */}
-      <button
-        onClick={() => handleOpenForm()}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
-        title="Nueva Transacción"
-      >
-        <AddIcon />
-      </button>
+      <QuickActionFAB onClick={handleOpenForm} label="Nuevo" />
 
       {/* Delete Confirmation Dialog */}
       <Modal open={deleteDialogOpen} onClose={handleCancelDelete} size="sm">

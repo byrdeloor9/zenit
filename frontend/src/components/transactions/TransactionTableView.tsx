@@ -3,9 +3,10 @@
  */
 
 import { useState, useRef, useEffect } from 'react'
-import { MoreVert, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material'
+import { MoreVert, Edit as EditIcon, Delete as DeleteIcon, TrendingUp, TrendingDown } from '@mui/icons-material'
 import { formatCurrency } from '../../utils/formatters'
 import type { Transaction } from '../../types'
+import { CategoryIcon } from '../categories/CategoryIcons'
 
 interface TransactionGroup {
     key: string
@@ -116,15 +117,6 @@ function TransactionTableRow({ transaction: tx, compact, onEdit, onDelete }: Tra
         }
     }, [menuOpen])
 
-    // Get category icon from API or use fallback
-    const getCategoryIcon = () => {
-        // Use category_icon from API if available
-        if (tx.category_icon) {
-            return tx.category_icon
-        }
-        // Fallback to type-based arrow
-        return tx.type === 'Income' ? '↗️' : '↘️'
-    }
 
     return (
         <tr className="hover:bg-gray-50 dark:hover:bg-gray-700/30 group transition-colors">
@@ -135,7 +127,11 @@ function TransactionTableRow({ transaction: tx, compact, onEdit, onDelete }: Tra
                         ? 'bg-green-100 dark:bg-green-900/20'
                         : 'bg-red-100 dark:bg-red-900/20'
                         }`}>
-                        {getCategoryIcon()}
+                        {tx.category_icon ? (
+                            <CategoryIcon iconName={tx.category_icon} className="text-2xl" />
+                        ) : (
+                            tx.type === 'Income' ? <TrendingUp fontSize="small" /> : <TrendingDown fontSize="small" />
+                        )}
                     </div>
                     <span className="font-medium text-gray-900 dark:text-gray-100">
                         {tx.description || 'Sin descripción'}

@@ -173,13 +173,7 @@ export function CategoryList(): JSX.Element {
       )}
 
       {/* FAB Button */}
-      <button
-        onClick={() => handleOpenForm()}
-        className="fixed bottom-24 right-4 md:bottom-8 md:right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-40"
-        title="Nueva Categoría"
-      >
-        <AddIcon />
-      </button>
+      <QuickActionFAB onClick={handleOpenForm} label="Nuevo" />
 
       {/* Category Form Dialog */}
       <CategoryForm

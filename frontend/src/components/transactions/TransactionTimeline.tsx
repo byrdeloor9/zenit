@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { TrendingUp, TrendingDown, Edit, Delete } from '@mui/icons-material'
 import { formatCurrency } from '../../utils/formatters'
 import type { Transaction } from '../../types'
+import { CategoryIcon } from '../categories/CategoryIcons'
 
 interface TransactionTimelineProps {
     transactions: Transaction[]
@@ -104,7 +105,11 @@ export function TransactionTimeline({ transactions, onEdit, onDelete }: Transact
                                     >
                                         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0 mr-3 transition-transform duration-300 ${isActive ? 'scale-110 shadow-sm' : ''} ${tx.type === 'Income' ? 'bg-green-50 dark:bg-green-900/10 text-green-600' : 'bg-red-50 dark:bg-red-900/10 text-red-600'
                                             }`}>
-                                            {tx.category_icon || (tx.type === 'Income' ? <TrendingUp fontSize="small" /> : <TrendingDown fontSize="small" />)}
+                                            {tx.category_icon ? (
+                                                <CategoryIcon iconName={tx.category_icon} className="text-xl" />
+                                            ) : (
+                                                tx.type === 'Income' ? <TrendingUp fontSize="small" /> : <TrendingDown fontSize="small" />
+                                            )}
                                         </div>
 
                                         <div className="flex-1 min-w-0">

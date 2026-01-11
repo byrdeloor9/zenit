@@ -37,7 +37,7 @@ export function AccountList(): JSX.Element {
   // Filters
   const [typeFilter, setTypeFilter] = useState<string>('all')
   const [currencyFilter, setCurrencyFilter] = useState<string>('all')
-  
+
   // Ref para controlar la primera carga y evitar llamadas duplicadas
   const hasFetchedRef = useRef<boolean>(false)
 
@@ -149,7 +149,7 @@ export function AccountList(): JSX.Element {
               </div>
             </div>
           </div>
-          
+
           {/* Filters - 30% en desktop, stack en móvil */}
           <div className="lg:w-64 space-y-3">
             <Select
@@ -171,10 +171,10 @@ export function AccountList(): JSX.Element {
               onChange={(e) => setCurrencyFilter(e.target.value)}
             >
               <option value="all">💵</option>
-            <option value="USD">USD</option>
-            <option value="MXN">MXN</option>
-            <option value="EUR">EUR</option>
-          </Select>
+              <option value="USD">USD</option>
+              <option value="MXN">MXN</option>
+              <option value="EUR">EUR</option>
+            </Select>
           </div>
         </div>
       </div>
@@ -219,13 +219,7 @@ export function AccountList(): JSX.Element {
       )}
 
       {/* FAB Button */}
-      <button
-        onClick={() => handleOpenForm()}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
-        title="Nueva Cuenta"
-      >
-        <AddIcon />
-      </button>
+      <QuickActionFAB onClick={handleOpenForm} label="Nuevo" />
 
       {/* Account Form Dialog */}
       <AccountForm
