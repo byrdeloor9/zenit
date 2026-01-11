@@ -40,32 +40,41 @@ import {
 export const iconMap: Record<string, React.ElementType> = {
     // Food
     LocalCafe, Restaurant, Fastfood, LocalBar, LocalPizza,
-    Icecream, SetMeal, Kitchen,
+    Icecream, SetMeal, Kitchen, BakeryDining,
+    BreakfastDining, BrunchDining, DinnerDining, Liquor,
 
     // Shopping
-    ShoppingCart, LocalMall, ShoppingBag, Store,
-    CreditCard, Receipt, LocalOffer,
+    ShoppingCart, LocalMall, ShoppingBag, Store, Storefront,
+    CreditCard, Receipt, LocalOffer, Sell, Redeem,
+    Checkroom,
 
     // Transport
-    DirectionsCar, DirectionsBus, Flight, TwoWheeler,
-    LocalGasStation, Train,
+    DirectionsCar, DirectionsBus, DirectionsSubway, Flight, TwoWheeler,
+    LocalTaxi, LocalGasStation, Commute, DirectionsBoat, Train,
 
     // Home
-    Home, Apartment, Cottage,
+    Home, Apartment, Cottage, Weekend,
     Lightbulb, WaterDrop, Bolt, Router,
+    Hvac, CleaningServices, Construction, LocalLaundryService, SmartScreen,
 
     // Entertainment
-    Movie, SportsEsports, MusicNote: QueueMusic,
-    SportsSoccer, FitnessCenter,
+    Movie, Theaters, SportsEsports, Casino, MusicNote: QueueMusic,
+    SportsSoccer, FitnessCenter, Pool, GolfCourse, SportsTennis,
 
     // Health
-    MedicalServices, LocalPharmacy, Spa,
+    MedicalServices, LocalPharmacy, Spa, Healing, SelfImprovement,
+    ContentCut, LocalHospital, Psychology,
 
     // Work/Edu
-    School, Work, AttachMoney,
+    School, Work, AttachMoney, BusinessCenter, Calculate,
+    MenuBook, Cast, Language, Science,
+
+    // Tech
+    PhoneIphone, Laptop, Build, Settings, Cloud,
+    Security, Lock, VpnKey,
 
     // Misc
-    PhoneIphone, Laptop, Pets, Park, Build, Settings
+    Pets, Park
 };
 
 export const CATEGORY_GROUPS = {
