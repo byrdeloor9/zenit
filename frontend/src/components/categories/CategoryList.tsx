@@ -102,8 +102,8 @@ export function CategoryList(): JSX.Element {
           <button
             onClick={() => setTypeFilter('all')}
             className={`px-4 py-2 rounded-full shadow-sm border flex items-center gap-2 transition-all ${typeFilter === 'all'
-                ? 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-500 ring-2 ring-gray-200 dark:ring-gray-600'
-                : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300'
+              ? 'bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-500 ring-2 ring-gray-200 dark:ring-gray-600'
+              : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-gray-300'
               }`}
           >
             <span className="text-xl">📂</span>
@@ -175,7 +175,7 @@ export function CategoryList(): JSX.Element {
       {/* FAB Button */}
       <button
         onClick={() => handleOpenForm()}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
+        className="fixed bottom-24 right-4 md:bottom-8 md:right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-40"
         title="Nueva Categoría"
       >
         <AddIcon />

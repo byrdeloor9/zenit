@@ -95,9 +95,9 @@ export function Dashboard({ stats }: DashboardProps): JSX.Element {
       </div>
 
       {/* Quick Action FAB */}
-      <div className="fixed bottom-24 lg:bottom-8 right-6 flex items-center gap-3 z-50">
+      <div className="fixed bottom-24 lg:bottom-8 right-6 flex items-center gap-3 z-30">
         <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm">
-          Quick Action
+          Nuevo
         </span>
         <button
           onClick={() => navigate('/financial-management?tab=transactions')}

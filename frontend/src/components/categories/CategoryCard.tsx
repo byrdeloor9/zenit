@@ -83,14 +83,16 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps):
         </div>
 
         {/* Right Side: Large Watermark Icon */}
+        {/* Right Side: Large Watermark Icon */}
         <div className={`
-          absolute right-3 bottom-[-6px] text-6xl transform group-hover:scale-110 transition-all duration-300 origin-bottom-right
-          ${iconColor} opacity-90 group-hover:opacity-100 group-hover:grayscale-0
+          absolute -right-3 -bottom-3 transition-all duration-300 origin-bottom-right
+          ${isIncome ? 'text-emerald-500' : 'text-rose-500'} 
+          opacity-15 group-hover:opacity-40 group-hover:scale-110
         `}>
           {category.icon ? (
-            <CategoryIcon iconName={category.icon} className="text-6xl" />
+            <CategoryIcon iconName={category.icon} className="!text-7xl" />
           ) : (
-            <span>{isIncome ? <TrendingUp className="text-6xl" /> : <TrendingDown className="text-6xl" />}</span>
+            <span>{isIncome ? <TrendingUp className="!text-7xl" /> : <TrendingDown className="!text-7xl" />}</span>
           )}
         </div>
       </div>
