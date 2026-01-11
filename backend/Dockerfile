@@ -6,10 +6,8 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 # Variables de entorno
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    # uv settings
     UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
-    # Asegurar que el venv se use
     PATH="/app/.venv/bin:$PATH"
 
 WORKDIR /app
@@ -19,22 +17,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Copiar archivos de definición de dependencias
+# ========== CACHE DE DEPENDENCIAS (RÁPIDO) ==========
+# Solo se reconstruye si pyproject.toml o uv.lock cambian
 COPY pyproject.toml uv.lock ./
-
-# Instalar dependencias con uv
-# --frozen asegura que usemos exactamente las versiones del lockfile
-# --no-install-project salta la instalación del proyecto actual como paquete, solo dependencias
 RUN uv sync --frozen --no-install-project
 
-# Copiar el código del proyecto
+# ========== CÓDIGO (SIN CACHE) ==========
+# ARG BUILD_DATE invalida esta capa en cada build
+ARG BUILD_DATE=unknown
+RUN echo "Build date: ${BUILD_DATE}"
+
 COPY . .
 
 # Recolectar estáticos
 RUN python manage.py collectstatic --noinput
 
-# Exponer puerto
 EXPOSE 8000
 
-# Comando de inicio usando el entorno virtual creado por uv
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "budget_project.wsgi:application"]
