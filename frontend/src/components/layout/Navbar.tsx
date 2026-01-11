@@ -53,8 +53,8 @@ export function Navbar(): JSX.Element {
           <div className="flex items-center justify-between h-16">
             {/* Logo - Mobile Only */}
             <div className="flex-shrink-0 flex items-center lg:hidden">
-              <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg mr-2">
-                <span className="text-white font-bold text-lg">Z</span>
+              <div className="w-8 h-8 mr-2">
+                <img src="/logo.png" alt="Zenit Logo" className="w-full h-full object-contain rounded-lg" />
               </div>
               <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
                 Zénit
@@ -127,7 +127,7 @@ export function Navbar(): JSX.Element {
             {/* Right Section: Search, Theme, User */}
             <div className="flex items-center space-x-3 ml-auto">
               {/* Theme Toggle */}
-              <div>
+              <div className="lg:hidden">
                 <ThemeToggle />
               </div>
 

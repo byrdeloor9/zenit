@@ -39,10 +39,6 @@ export function BudgetProjectionWidget({
     projectionData = []
 }: BudgetProjectionWidgetProps): JSX.Element {
 
-    // Debug logging
-    console.log('BudgetProjectionWidget - budgets:', budgets)
-    console.log('BudgetProjectionWidget - projectionData:', projectionData)
-
     // Mock data if empty, for visualization purposes as per reference image style
     const safeBudgets = budgets.length > 0 ? budgets.slice(0, 3) : []
 
@@ -55,11 +51,11 @@ export function BudgetProjectionWidget({
 
     // Colors for the budget progress bars (matching reference: Purple, Teal, Slate/Grey)
     const budgetColors = [
-        { bar: 'bg-indigo-600', bg: 'bg-indigo-100 dark:bg-indigo-900/20' },
-        { bar: 'bg-teal-500', bg: 'bg-teal-100 dark:bg-teal-900/20' },
-        { bar: 'bg-slate-500', bg: 'bg-slate-200 dark:bg-slate-700' },
-        { bar: 'bg-amber-500', bg: 'bg-amber-100 dark:bg-amber-900/20' },
-        { bar: 'bg-rose-500', bg: 'bg-rose-100 dark:bg-rose-900/20' },
+        { bar: 'bg-gradient-to-r from-[#3F4786] to-[#5A62C8]', bg: 'bg-indigo-100 dark:bg-indigo-900/20' },
+        { bar: 'bg-gradient-to-r from-[#189c77] to-[#36c79b]', bg: 'bg-emerald-100 dark:bg-emerald-900/20' },
+        { bar: 'bg-gradient-to-r from-slate-500 to-slate-400', bg: 'bg-slate-200 dark:bg-slate-700' },
+        { bar: 'bg-gradient-to-r from-amber-500 to-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/20' },
+        { bar: 'bg-gradient-to-r from-rose-500 to-rose-400', bg: 'bg-rose-100 dark:bg-rose-900/20' },
     ]
 
     return (
@@ -114,8 +110,8 @@ export function BudgetProjectionWidget({
                         <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#3F4786" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#3F4786" stopOpacity={0} />
                                 </linearGradient>
                                 <linearGradient id="colorBalanceGreen" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="#10B981" stopOpacity={0.3} />
@@ -153,7 +149,7 @@ export function BudgetProjectionWidget({
                             <Area
                                 type="monotone"
                                 dataKey="balance"
-                                stroke="#4F46E5"
+                                stroke="#3F4786"
                                 strokeWidth={3}
                                 fillOpacity={1}
                                 fill="url(#colorBalance)"

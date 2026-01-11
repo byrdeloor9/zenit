@@ -83,14 +83,24 @@ class DashboardService:
     
     @staticmethod
     def get_budget_status(user_id: Optional[int] = None) -> List[Dict[str, Any]]:
-        """Get status of all active budgets"""
-        queryset = Budget.objects.select_related('category').filter(status='Active')
+        """Get status of all active budgets for the current period"""
+        from django.db.models import Q
+        
+        today = date.today()
+        
+        # Filter budgets that are:
+        # 1. Status = 'Active'
+        # 2. Started on or before today
+        # 3. Either haven't ended yet (period_end is null) OR end date is today or later
+        queryset = Budget.objects.select_related('category').filter(
+            status='Active',
+            period_start__lte=today
+        ).filter(
+            Q(period_end__isnull=True) | Q(period_end__gte=today)
+        )
+        
         if user_id:
             queryset = queryset.filter(user_id=user_id)
-        
-        # Debug logging
-        print(f"[DEBUG] get_budget_status - user_id: {user_id}")
-        print(f"[DEBUG] get_budget_status - queryset count: {queryset.count()}")
         
         budgets_data = []
         for budget in queryset:
@@ -117,10 +127,6 @@ class DashboardService:
                 'spent': str(spent),
                 'percentage': round(percentage, 1),
             })
-        
-        # Debug logging
-        print(f"[DEBUG] get_budget_status - budgets_data count: {len(budgets_data)}")
-        print(f"[DEBUG] get_budget_status - budgets_data: {budgets_data}")
         
         # Return top 5 by percentage usage
         return sorted(budgets_data, key=lambda x: x['percentage'], reverse=True)[:5]
