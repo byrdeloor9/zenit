@@ -1,52 +1,12 @@
-import {
-  TrendingUp,
-  TrendingDown,
-  Restaurant,
-  DirectionsCar,
-  ShoppingBag,
-  Home,
-  Movie,
-  LocalCafe,
-  FitnessCenter,
-  School,
-  MedicalServices,
-  Pets,
-  Flight,
-  Build,
-  Work,
-  Savings
-} from '@mui/icons-material'
 import { Card } from '../ui/Card'
 import { Badge } from '../ui/Badge'
 import { formatCurrency, formatDate } from '../../utils/formatters'
 import type { Transaction } from '../../types'
+import { CategoryIcon } from '../categories/CategoryIcons'
 
 interface TransactionListProps {
   transactions: Transaction[]
   wrapper?: boolean
-}
-
-// Helper to map category names to icons
-const getCategoryIcon = (categoryName: string | null | undefined, type: 'Income' | 'Expense') => {
-  if (type === 'Income') return <TrendingUp className="text-lg" />
-
-  if (!categoryName) return <TrendingDown className="text-lg" />
-
-  const name = categoryName.toLowerCase()
-
-  if (name.includes('comida') || name.includes('restaurante') || name.includes('almuerzo') || name.includes('cena')) return <Restaurant className="text-lg" />
-  if (name.includes('cafe') || name.includes('coffee')) return <LocalCafe className="text-lg" />
-  if (name.includes('transporte') || name.includes('gasolina') || name.includes('uber') || name.includes('taxi') || name.includes('vehiculo')) return <DirectionsCar className="text-lg" />
-  if (name.includes('hogar') || name.includes('casa') || name.includes('renta') || name.includes('luz') || name.includes('agua')) return <Home className="text-lg" />
-  if (name.includes('compras') || name.includes('ropa') || name.includes('shopping') || name.includes('supermercado')) return <ShoppingBag className="text-lg" />
-  if (name.includes('entretenimiento') || name.includes('cine') || name.includes('juegos') || name.includes('netflix')) return <Movie className="text-lg" />
-  if (name.includes('salud') || name.includes('medico') || name.includes('farmacia')) return <MedicalServices className="text-lg" />
-  if (name.includes('educacion') || name.includes('curso') || name.includes('universidad')) return <School className="text-lg" />
-  if (name.includes('deporte') || name.includes('gimnasio') || name.includes('gym')) return <FitnessCenter className="text-lg" />
-  if (name.includes('mascota') || name.includes('veterinaria')) return <Pets className="text-lg" />
-  if (name.includes('viaje') || name.includes('vacaciones')) return <Flight className="text-lg" />
-
-  return <TrendingDown className="text-lg" />
 }
 
 export function TransactionList({ transactions, wrapper = true }: TransactionListProps): JSX.Element {
@@ -67,7 +27,11 @@ export function TransactionList({ transactions, wrapper = true }: TransactionLis
                 {/* Icon Container - Neural Style (Gray Circle) */}
                 <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#363C97]/10 dark:bg-[#363C97]/20 flex items-center justify-center text-[#363C97] dark:text-[#8ea5ff]">
                   {/* Category Icon */}
-                  {getCategoryIcon(transaction.category_name, transaction.type)}
+                  {transaction.category_icon ? (
+                    <CategoryIcon iconName={transaction.category_icon} className="text-2xl" />
+                  ) : (
+                    <CategoryIcon iconName={transaction.type === 'Income' ? 'TrendingUp' : 'TrendingDown'} className="text-2xl" />
+                  )}
                 </div>
 
                 {/* Text Info */}

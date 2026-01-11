@@ -64,9 +64,8 @@ export function BudgetProjectionWidget({
             {/* SECTION 1: Budget Status */}
             <div>
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                    Budget Status
+                    Estado del Presupuesto
                 </h3>
-
                 <div className="space-y-4">
                     {safeBudgets.length > 0 ? (
                         safeBudgets.map((budget, index) => {
@@ -102,7 +101,7 @@ export function BudgetProjectionWidget({
             {/* SECTION 2: 3 Month Projection */}
             <div className="flex-1 min-h-[250px] flex flex-col">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
-                    3 Month Projection
+                    Proyección a 3 Meses
                 </h3>
 
                 <div className="flex-1 w-full -ml-4">

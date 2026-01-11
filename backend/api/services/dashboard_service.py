@@ -104,12 +104,16 @@ class DashboardService:
         
         budgets_data = []
         for budget in queryset:
-            # Calculate spent (same logic as BudgetSerializer)
+            # Calculate spent (Current Month Logic)
+            first_day_of_month = today.replace(day=1)
+            # Use later of period_start or first day of month
+            calc_start_date = budget.period_start if budget.period_start > first_day_of_month else first_day_of_month
+            
             filters = {
                 'user': budget.user,
                 'category': budget.category,
                 'type': 'Expense',
-                'transaction_date__gte': budget.period_start,
+                'transaction_date__gte': calc_start_date,
             }
             if budget.period_end:
                 filters['transaction_date__lte'] = budget.period_end
