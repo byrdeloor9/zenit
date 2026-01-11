@@ -4,13 +4,14 @@
  */
 
 import { useEffect, useState } from 'react'
-import { 
-  Add as AddIcon, 
+import {
+  Add as AddIcon,
   ArrowForward,
   AccountBalance,
   Delete as DeleteIcon,
 } from '@mui/icons-material'
 import { useTransfers, useAccounts } from '../../hooks'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 import { TransferForm } from './TransferForm'
 import { Modal } from '../ui/Modal'
 import { Button } from '../ui/Button'
@@ -143,14 +144,14 @@ export function TransferList(): JSX.Element {
                 <div className="p-3 bg-red-100 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
                   <AccountBalance className="w-5 h-5 text-red-600" />
                 </div>
-                
+
                 <ArrowForward className="w-6 h-6 text-blue-600" />
-                
+
                 {/* Icono To */}
                 <div className="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                   <AccountBalance className="w-5 h-5 text-green-600" />
                 </div>
-                
+
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
@@ -160,14 +161,14 @@ export function TransferList(): JSX.Element {
                     {formatDate(transfer.transfer_date)}
                   </p>
                 </div>
-                
+
                 {/* Monto */}
                 <div className="text-right">
                   <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                     {formatCurrency(transfer.amount)}
                   </p>
                 </div>
-                
+
                 {/* Acciones */}
                 <button
                   onClick={() => handleDeleteClick(transfer.id)}
@@ -183,13 +184,7 @@ export function TransferList(): JSX.Element {
 
       {/* FAB Button */}
       {accounts.length >= 2 && (
-        <button
-          onClick={() => handleOpenForm()}
-          className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
-          title="Nueva Transferencia"
-        >
-          <AddIcon />
-        </button>
+        <QuickActionFAB onClick={handleOpenForm} label="Nuevo" />
       )}
 
       {/* Transfer Form Dialog */}

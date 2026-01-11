@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react'
 import { Add as AddIcon, Search as SearchIcon, Clear as ClearIcon, MoreVert, Edit as EditIcon, Delete as DeleteIcon, Payment as PaymentIcon } from '@mui/icons-material'
 import { useDebts } from '../../hooks'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 import { DebtCard } from './DebtCard'
 import { DebtForm } from './DebtForm'
 import { PaymentDialog } from './PaymentDialog'
@@ -179,7 +180,7 @@ export function DebtList(): JSX.Element {
               </div>
             </div>
           </div>
-          
+
           {/* Filters - 30% en desktop, stack en móvil */}
           <div className="lg:w-64 space-y-3">
             <Select
@@ -228,8 +229,8 @@ export function DebtList(): JSX.Element {
             {searchQuery || statusFilter !== 'all' ? 'No se encontraron deudas' : 'No tienes deudas registradas'}
           </h3>
           <p className="text-gray-500 dark:text-gray-500 mb-4">
-            {searchQuery || statusFilter !== 'all' 
-              ? 'Intenta ajustar los filtros de búsqueda' 
+            {searchQuery || statusFilter !== 'all'
+              ? 'Intenta ajustar los filtros de búsqueda'
               : 'Registra tu primera deuda para comenzar el seguimiento'
             }
           </p>
@@ -249,7 +250,7 @@ export function DebtList(): JSX.Element {
                 {filteredDebts.map(debt => {
                   const monthsElapsed = Math.floor((new Date().getTime() - new Date(debt.start_date).getTime()) / (1000 * 60 * 60 * 24 * 30))
                   const monthsRemaining = Math.max(0, debt.term_months - monthsElapsed)
-                  
+
                   return (
                     <TableRow key={debt.id}>
                       <TableCell>
@@ -279,8 +280,8 @@ export function DebtList(): JSX.Element {
                       </TableCell>
                       <TableCell>
                         <div className="w-32">
-                          <ProgressBar 
-                            value={debt.payment_progress} 
+                          <ProgressBar
+                            value={debt.payment_progress}
                             max={100}
                             showPercentage={false}
                           />
@@ -333,12 +334,7 @@ export function DebtList(): JSX.Element {
       )}
 
       {/* FAB Button */}
-      <button
-        onClick={() => handleOpenForm()}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
-      >
-        <AddIcon />
-      </button>
+      <QuickActionFAB onClick={handleOpenForm} label="Nuevo" />
 
       {/* Debt Form Dialog */}
       <DebtForm

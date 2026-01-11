@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import { Add as AddIcon } from '@mui/icons-material'
 import { useBudgets, useCategories } from '../../hooks'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 import { BudgetCard } from './BudgetCard'
 import { BudgetForm } from './BudgetForm'
 import { Modal } from '../ui/Modal'
@@ -153,12 +154,7 @@ export function BudgetList(): JSX.Element {
       )}
 
       {/* FAB Button */}
-      <button
-        onClick={() => handleOpenForm()}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
-      >
-        <AddIcon />
-      </button>
+      <QuickActionFAB onClick={handleOpenForm} label="Nuevo" />
 
       {/* Budget Form Dialog */}
       <BudgetForm

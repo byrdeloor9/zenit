@@ -110,14 +110,14 @@ export function MobileBottomNav() {
             {/* Backdrop */}
             {activeMenuId && (
                 <div
-                    className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                    className="fixed inset-0 bg-black/30 z-40"
                     onClick={() => setActiveMenuId(null)}
                 />
             )}
 
             {/* Bottom Sheet Menu */}
             <div className={`
-                fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 z-40 rounded-t-[2rem] shadow-[0_-8px_30px_rgba(0,0,0,0.12)]
+                fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 z-45 rounded-t-[2rem] shadow-[0_-8px_30px_rgba(0,0,0,0.12)]
                 transform transition-transform duration-300 ease-out border-t border-gray-100 dark:border-gray-800
                 ${activeMenuId ? 'translate-y-0' : 'translate-y-[120%]'}
             `}>
@@ -126,7 +126,7 @@ export function MobileBottomNav() {
                     <div className="w-12 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full" />
                 </div>
 
-                <div className="p-4 pb-24 space-y-2 max-h-[70vh] overflow-y-auto">
+                <div className="p-4 pb-20 space-y-2 max-h-[70vh] overflow-y-auto">
                     {currentMenu?.subOptions?.map((option) => {
                         const isOptionActive = location.search.includes(option.path.split('?')[1] || 'nevermatch')
                             || (option.id === currentMenu.subOptions![0].id && !location.search.includes('tab='))

@@ -3,8 +3,8 @@
  */
 
 import { useEffect, useState } from 'react'
-import { 
-  EmojiEvents as GoalIcon, 
+import {
+  EmojiEvents as GoalIcon,
   Shield as PolicyIcon,
   TrendingUp,
   CheckCircle,
@@ -15,6 +15,7 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material'
 import { useInvestments, useAccounts } from '../../hooks'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 import { InvestmentCard } from './InvestmentCard'
 import { InvestmentForm } from './InvestmentForm'
 import { ContributionDialog } from './ContributionDialog'
@@ -169,14 +170,14 @@ export function InvestmentList(): JSX.Element {
               </div>
             </div>
           </div>
-          
+
           {/* Filters - 30% en desktop, stack en móvil */}
           <div className="lg:w-64 space-y-3">
             <Select
               id="typeFilter"
               label=""
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
             >
               <option value="all">Todos</option>
               <option value="goal">Metas</option>
@@ -185,8 +186,8 @@ export function InvestmentList(): JSX.Element {
             <Select
               id="statusFilter"
               label=""
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
             >
               <option value="all">Todos</option>
               <option value="active">Activos</option>
@@ -198,20 +199,20 @@ export function InvestmentList(): JSX.Element {
       </div>
 
       {/* Error Alert */}
-        {error && (
+      {error && (
         <Alert type="error" message={error} />
-        )}
+      )}
 
       {/* Investments: Table on desktop, Cards on mobile */}
-        {filteredInvestments.length === 0 ? (
+      {filteredInvestments.length === 0 ? (
         <Card className="text-center py-12">
           <div className="text-6xl mb-4">🎯</div>
           <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">
             {typeFilter !== 'all' || statusFilter !== 'all' ? 'No se encontraron inversiones' : 'No tienes inversiones registradas'}
           </h3>
           <p className="text-gray-500 dark:text-gray-500 mb-4">
-            {typeFilter !== 'all' || statusFilter !== 'all' 
-              ? 'Intenta ajustar los filtros de búsqueda' 
+            {typeFilter !== 'all' || statusFilter !== 'all'
+              ? 'Intenta ajustar los filtros de búsqueda'
               : 'Crea tu primera meta o póliza para comenzar a invertir'
             }
           </p>
@@ -237,7 +238,7 @@ export function InvestmentList(): JSX.Element {
                   const daysToMaturity = investment.maturity_date
                     ? Math.ceil((new Date(investment.maturity_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
                     : null
-                  
+
                   return (
                     <TableRow key={investment.id}>
                       <TableCell>
@@ -278,9 +279,9 @@ export function InvestmentList(): JSX.Element {
                       </TableCell>
                       <TableCell>
                         <div className="w-32">
-                          <ProgressBar 
-                            value={parseFloat(investment.current_amount)} 
-                            max={parseFloat(investment.target_amount || '0')} 
+                          <ProgressBar
+                            value={parseFloat(investment.current_amount)}
+                            max={parseFloat(investment.target_amount || '0')}
                             showPercentage={false}
                           />
                           <span className="text-xs text-gray-500 mt-0.5 inline-block">
@@ -326,12 +327,7 @@ export function InvestmentList(): JSX.Element {
       )}
 
       {/* FAB Button */}
-      <button
-        onClick={() => handleOpenForm()}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50"
-      >
-        <AddIcon />
-      </button>
+      <QuickActionFAB onClick={handleOpenForm} label="Nuevo" />
 
       {/* Investment Form Dialog */}
       <InvestmentForm

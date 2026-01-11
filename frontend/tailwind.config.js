@@ -33,6 +33,10 @@ export default {
           900: '#164e63',
         },
       },
+      zIndex: {
+        '45': '45',
+        '60': '60',
+      },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',
         'slide-in': 'slideIn 0.3s ease-out',

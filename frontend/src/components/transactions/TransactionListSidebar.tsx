@@ -4,6 +4,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { Add } from '@mui/icons-material'
+import { QuickActionFAB } from '../ui/QuickActionFAB'
 import { TransactionSidebar } from './TransactionSidebar'
 import { TransactionTableView } from './TransactionTableView'
 import { TransactionTimeline } from './TransactionTimeline'
@@ -295,13 +296,7 @@ export function TransactionListSidebar() {
             </Modal>
 
             {/* FAB Flotante para móvil */}
-            <button
-                onClick={() => handleOpenForm()}
-                className={`lg:hidden fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 flex items-center justify-center z-50 ${formOpen ? 'hidden' : ''}`}
-                title="Nueva Transacción"
-            >
-                <Add />
-            </button>
+            <QuickActionFAB onClick={handleOpenForm} label="Nuevo" mobileOnly />
         </div>
     )
 }
